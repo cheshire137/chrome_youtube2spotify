@@ -9,8 +9,11 @@
   "content_scripts": [
     {
       "all_frames": true,
-      "matches": ["http://*/*", "https://*/*", "<all_urls>", "file:///*"],
-      "js": ["jquery-2.0.0.min.js", "colourizer.js"]
+      "matches": ["http://www.reddit.com/*", "https://www.reddit.com/*", 
+                  "http://reddit.com/*", "https://reddit.com/*",
+                  "http://www.youtube.com/*", "https://www.youtube.com/*", 
+                  "http://youtube.com/*", "https://youtube.com/*"],
+      "js": ["jquery-2.0.0.min.js", "youtube2spotify.js"]
     }
   ],
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
