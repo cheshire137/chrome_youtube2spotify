@@ -34,6 +34,25 @@ var youtube2spotify_popup = {
     });
   },
 
+  setup_clear_tracks_link: function() {
+    $('a[href="#clear-tracks"]').click(function() {
+      chrome.storage.local.get('youtube2spotify', function(data) {
+        data = data.youtube2spotify || {};
+        data.tracks = {};
+        chrome.storage.local.set(
+          {'youtube2spotify': data},
+          function() {
+            $('ul li').fadeOut(function() {
+              $(this).remove();
+            });
+            $('h2').fadeOut();
+          }
+        );
+      });
+      return false;
+    });
+  },
+
   create_artist_link: function(artist_data, spotify_choice) {
     var artist_link = $('<a href=""></a>');
     if (spotify_choice === 'desktop_application') {
@@ -111,6 +130,9 @@ var youtube2spotify_popup = {
   },
 
   setup_trackset_links: function(track_ids) {
+    if (track_ids.length < 1) {
+      return;
+    }
     var name = 'YouTubeTrackset';
     var joined_ids = track_ids.join(',');
 
@@ -148,6 +170,7 @@ var youtube2spotify_popup = {
 
   on_popup_opened: function() {
     this.setup_options_link();
+    this.setup_clear_tracks_link();
     var me = this;
     chrome.storage.sync.get('youtube2spotify_options', function(opts) {
       opts = opts.youtube2spotify_options || {};

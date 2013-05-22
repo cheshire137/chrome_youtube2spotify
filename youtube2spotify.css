@@ -239,6 +239,10 @@ label + label {
 small {
   font-size: 12px;
 }
+span.separator {
+  display: inline-block;
+  margin: 0 5px;
+}
 #status-message {
   position: absolute;
   width: 100%;
