@@ -4,6 +4,12 @@ This is a Chrome extension that adds a Spotify icon next to YouTube music video
 links on Reddit. Clicking the Spotify icon will start playing the track in 
 Spotify, either in the web player or the desktop application.
 
+## Screenshots
+
+![Screenshot of YouTube2Spotify](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/screenshot.png)
+
+![Screenshot 2 of YouTube2Spotify](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/screenshot2.png)
+
 ## Feature To-do List
 
 * Update popup while you're looking at it with new tracks that were found.
