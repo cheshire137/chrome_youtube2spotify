@@ -41,7 +41,10 @@ var youtube2spotify = {
   get_youtube_links: function() {
     var urls = this.get_youtube_urls();
     var selector = 'a.title[href^="' + urls.join('"], a.title[href^="') + '"]';
-    return $(selector);
+    var links = $(selector).filter(function() {
+      return $(this).next('.spotify-track').length < 1;
+    });
+    return links;
   },
 
   get_youtube_title: function(video_id, callback) {
@@ -340,6 +343,7 @@ youtube2spotify.add_spotify_links(function(spotify_choice) {
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.action === 'check_for_youtube_links') {
+    console.log('checking for more YouTube links...');
     youtube2spotify.add_spotify_links(function(spotify_choice) {
       youtube2spotify.on_spotify_links_updated(spotify_choice);
     });

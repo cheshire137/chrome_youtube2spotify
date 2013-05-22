@@ -182,7 +182,9 @@ var youtube2spotify_popup = {
 
 $(function() {
   youtube2spotify_popup.on_popup_opened();
-  chrome.extension.sendRequest({action: 'check_for_youtube_links'});
+  chrome.tabs.getSelected(null, function(tab) {
+    chrome.tabs.sendRequest(tab.id, {action: 'check_for_youtube_links'});
+  });
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
