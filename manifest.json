@@ -18,6 +18,11 @@
   ],
   "options_page": "options.html",
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+  "browser_action": {
+    "default_icon": "icon48.png",
+    "default_popup": "popup.html",
+    "default_title": "YouTube2Spotify Tracks"
+  },
   "icons": {
     "48": "icon48.png",
     "128": "icon128.png"
