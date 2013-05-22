@@ -16,7 +16,7 @@
  */
 
 var youtube2spotify = {
-  get_youtube_links: function() {
+  get_youtube_urls: function() {
     var domains = ['youtu.be', 'youtube.com'];
     var urls = [];
     for (var i=0; i<domains.length; i++) {
@@ -26,6 +26,11 @@ var youtube2spotify = {
       urls.push('https://' + domain);
       urls.push('https://www.' + domain);
     }
+    return urls;
+  },
+
+  get_youtube_links: function() {
+    var urls = this.get_youtube_urls();
     var selector = 'a[href^="' + urls.join('"], a[href^="') + '"]';
     return $(selector);
   },
@@ -70,7 +75,18 @@ var youtube2spotify = {
     });
   },
 
-  on_spotify_url_retrieved: function(youtube_link, app_url, spotify_choice) {
+  get_current_youtube_video_id: function() {
+    var current_url = window.location.href;
+    var youtube_urls = this.get_youtube_urls();
+    for (var i=0; i<youtube_urls.length; i++) {
+      if (current_url.indexOf(youtube_urls[i]) > -1) {
+        return this.get_youtube_video_id(current_url);
+      }
+    }
+    return false;
+  },
+
+  on_spotify_url_retrieved: function(el, app_url, spotify_choice) {
     if (!app_url) {
       return;
     }
@@ -90,40 +106,62 @@ var youtube2spotify = {
     var icon = $('<img src="' + icon_url + '" alt="' + title + 
                  '" width="16" height="16">');
     spotify_link.append(icon);
-    spotify_link.insertAfter(youtube_link);
+    spotify_link.insertAfter(el);
   },
 
-  on_youtube_title_retrieved: function(youtube_link, title, spotify_choice) {
+  on_youtube_title_retrieved: function(el, title, spotify_choice) {
     if (!title) {
       return;
     }
     var me = this;
     this.get_spotify_url(title, function(url) {
-      me.on_spotify_url_retrieved(youtube_link, url, spotify_choice);
+      me.on_spotify_url_retrieved(el, url, spotify_choice);
     });
   },
 
-  add_spotify_link: function(youtube_link, spotify_choice) {
+  add_spotify_link_for_element: function(el, video_id, spotify_choice) {
+    var me = this;
+    this.get_youtube_title(video_id, function(title) {
+      me.on_youtube_title_retrieved(el, title, spotify_choice);
+    });
+  },
+
+  add_spotify_link_for_yt_link: function(youtube_link, spotify_choice) {
     var url = youtube_link.attr('href');
     var video_id = this.get_youtube_video_id(url);
     if (!video_id) {
       return;
     }
+    this.add_spotify_link_for_element(youtube_link, video_id, spotify_choice);
+  },
+
+  add_spotify_links_for_youtube_links: function(spotify_choice) {
+    var links = this.get_youtube_links();
     var me = this;
-    this.get_youtube_title(video_id, function(title) {
-      me.on_youtube_title_retrieved(youtube_link, title, spotify_choice);
+    links.each(function() {
+      me.add_spotify_link_for_yt_link($(this), spotify_choice);
     });
+  },
+
+  add_spotify_links_on_youtube: function(spotify_choice) {
+    var video_id = this.get_current_youtube_video_id();
+    if (!video_id) {
+      return;
+    }
+    var el = $('#eow-title');
+    if (el.length < 1) {
+      el = $('#player-api');
+    }
+    this.add_spotify_link_for_element(el, video_id, spotify_choice);
   },
 
   add_spotify_links: function() {
     var me = this;
-    var links = this.get_youtube_links();
     chrome.storage.sync.get('youtube2spotify_options', function(opts) {
       opts = opts.youtube2spotify_options || {};
       var spotify_choice = opts.spotify || 'web_player';
-      links.each(function() {
-        me.add_spotify_link($(this), spotify_choice);
-      });
+      me.add_spotify_links_for_youtube_links(spotify_choice);
+      me.add_spotify_links_on_youtube(spotify_choice);
     });
   }
 };

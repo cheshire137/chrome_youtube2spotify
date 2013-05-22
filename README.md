@@ -6,5 +6,4 @@ Spotify, either in the web player or the desktop application.
 
 ## To-do List
 
-* Add a Spotify links to music videos on YouTube. Clicking the link will open the song in Spotify.
 * Allow creating a Spotify playlist from a subreddit like [/r/Music](http://www.reddit.com/r/Music) on [Reddit](http://www.reddit.com), using the latest/top YouTube links that have been posted.
