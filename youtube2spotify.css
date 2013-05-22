@@ -244,6 +244,9 @@ small {
   width: 100%;
   top: 2.3em;
 }
+#track-count {
+  display: inline;
+}
 ul.artists {
   padding-left: 0;
   list-style: none;

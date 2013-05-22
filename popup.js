@@ -130,12 +130,17 @@ var youtube2spotify_popup = {
     $('h2').fadeIn();
   },
 
+  display_track_count: function(track_count) {
+    $('#track-count').text(track_count);
+  },
+
   update_track_list: function(spotify_choice) {
     var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
       var tracks = data.tracks || {};
       var track_ids = me.get_sorted_track_ids(tracks);
+      me.display_track_count(track_ids.length);
       me.setup_trackset_links(track_ids);
       me.populate_track_list(track_ids, tracks, spotify_choice);
     });
