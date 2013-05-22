@@ -57,22 +57,6 @@ var youtube2spotify = {
     return url.split('.com/v/')[1];
   },
 
-  on_spotify_url_retrieved: function(youtube_link, app_url) {
-    if (app_url) {
-      var track_id = app_url.split('spotify:track:')[1];
-      var web_url = 'https://play.spotify.com/track/' + track_id;
-      var spotify_link = $('<a href="' + web_url + '" target="_blank"></a>');
-      spotify_link.css('vertical-align', 'middle');
-      spotify_link.css('display', 'inline-block');
-      spotify_link.attr('title', 'Open track in Spotify');
-      var icon_url = chrome.extension.getURL('spotify.png');
-      var icon = $('<img src="' + icon_url + '" alt="Spotify" width="16" ' + 
-                   'height="16">');
-      spotify_link.append(icon);
-      spotify_link.insertAfter(youtube_link);
-    }
-  },
-
   get_spotify_url: function(title, callback) {
     var query_url = 'http://ws.spotify.com/search/1/track.json?q=' + 
                     encodeURIComponent(title);
@@ -86,30 +70,60 @@ var youtube2spotify = {
     });
   },
 
-  on_youtube_title_retrieved: function(youtube_link, title) {
-    console.log(title);
-    if (title) {
-      var me = this;
-      this.get_spotify_url(title, function(url) {
-        me.on_spotify_url_retrieved(youtube_link, url);
-      });
+  on_spotify_url_retrieved: function(youtube_link, app_url, spotify_choice) {
+    if (!app_url) {
+      return;
     }
+    var spotify_link = $('<a href=""></a>');
+    if (spotify_choice === 'desktop_application') {
+      spotify_link.attr('href', app_url);
+    } else {
+      var track_id = app_url.split('spotify:track:')[1];
+      spotify_link.attr('href', 'https://play.spotify.com/track/' + track_id);
+      spotify_link.attr('target', '_blank');
+    }
+    spotify_link.css('vertical-align', 'middle');
+    spotify_link.css('display', 'inline-block');
+    var title = 'Open track in Spotify';
+    spotify_link.attr('title', title);
+    var icon_url = chrome.extension.getURL('spotify.png');
+    var icon = $('<img src="' + icon_url + '" alt="' + title + 
+                 '" width="16" height="16">');
+    spotify_link.append(icon);
+    spotify_link.insertAfter(youtube_link);
   },
 
-  add_spotify_link: function(youtube_link) {
+  on_youtube_title_retrieved: function(youtube_link, title, spotify_choice) {
+    if (!title) {
+      return;
+    }
+    var me = this;
+    this.get_spotify_url(title, function(url) {
+      me.on_spotify_url_retrieved(youtube_link, url, spotify_choice);
+    });
+  },
+
+  add_spotify_link: function(youtube_link, spotify_choice) {
     var url = youtube_link.attr('href');
     var video_id = this.get_youtube_video_id(url);
+    if (!video_id) {
+      return;
+    }
     var me = this;
     this.get_youtube_title(video_id, function(title) {
-      me.on_youtube_title_retrieved(youtube_link, title);
+      me.on_youtube_title_retrieved(youtube_link, title, spotify_choice);
     });
   },
 
   add_spotify_links: function() {
     var me = this;
     var links = this.get_youtube_links();
-    links.each(function() {
-      me.add_spotify_link($(this));
+    chrome.storage.sync.get('youtube2spotify_options', function(opts) {
+      opts = opts.youtube2spotify_options || {};
+      var spotify_choice = opts.spotify || 'web_player';
+      links.each(function() {
+        me.add_spotify_link($(this), spotify_choice);
+      });
     });
   }
 };
