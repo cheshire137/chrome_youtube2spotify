@@ -176,17 +176,45 @@ var youtube2spotify = {
     return app_url.split('spotify:track:')[1];
   },
 
-  on_spotify_data_retrieved: function(el, data, s_choice, is_last, callback) {
-    if (data) {
-      this.add_spotify_track_link(el, data, s_choice);
-      this.store_track_data(data, function() {
-        if (is_last) {
-          callback();
-        }
-      });
-    } else if (is_last) {
-      callback();
+  remove_str_groups: function(str, open_str, close_str) {
+    var open_paren_index = str.indexOf(open_str);
+    while (open_paren_index > -1) {
+      var closed_paren_index = str.indexOf(close_str, open_paren_index);
+      if (closed_paren_index > -1) {
+        str = str.substring(0, open_paren_index) + ' ' + 
+              str.substring(closed_paren_index + 1);
+        open_paren_index = str.indexOf(open_str);
+      }
     }
+    return str;
+  },
+
+  clean_youtube_title: function(title) {
+    var colon_index = title.indexOf(':');
+    if (colon_index > -1) {
+      var before_colon = title.substring(0, colon_index)
+      var after_colon = title.substring(colon_index + 1);
+      if (before_colon.length < after_colon.length) {
+        title = after_colon;
+      } else {
+        title = before_colon;
+      }
+    }
+    title.replace("'s ", ' ');
+    title = this.remove_str_groups(title, '(', ')');
+    title = this.remove_str_groups(title, '[', ']');
+    title = title.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, ' ');
+    title = $.trim(title.replace(/\s+/, ' '));
+    return title;
+  },
+
+  on_spotify_data_retrieved: function(el, data, s_choice, is_last, callback) {
+    this.add_spotify_track_link(el, data, s_choice);
+    this.store_track_data(data, function() {
+      if (is_last) {
+        callback();
+      }
+    });
   },
 
   on_youtube_title_retrieved: function(el, title, s_choice, is_last, callback) {
@@ -198,7 +226,19 @@ var youtube2spotify = {
     }
     var me = this;
     this.get_spotify_data(title, function(data) {
-      me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
+      if (data) {
+        me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
+      } else {
+        var cleaned_title = me.clean_youtube_title(title);
+        me.get_spotify_data(cleaned_title, function(data_attempt2) {
+          if (data_attempt2) {
+            me.on_spotify_data_retrieved(el, data_attempt2, s_choice, is_last, 
+                                         callback);
+          } else if (is_last) {
+            callback();
+          }
+        });
+      }
     });
   },
 
