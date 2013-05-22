@@ -71,11 +71,11 @@ var youtube2spotify_popup = {
       track_link.attr('href', track_data.app_url);
     } else {
       track_link.attr('href', track_data.web_url);
-      track_link.click(function() {
-        chrome.tabs.create({url: $(this).attr('href')});
-        return false;
-      });
     }
+    track_link.click(function() {
+      chrome.tabs.create({url: $(this).attr('href')});
+      return false;
+    });
     track_link.text(track_data.name);
     return track_link;
   },
@@ -110,12 +110,33 @@ var youtube2spotify_popup = {
     return track_ids;
   },
 
+  setup_trackset_links: function(track_ids) {
+    var name = 'YouTubeTrackset';
+    var joined_ids = track_ids.join(',');
+
+    var app_link = $('a.app-trackset-link');
+    app_link.unbind('click').click(function() {
+      chrome.tabs.create({url: 'spotify:trackset:' + name + ':' + joined_ids});
+      return false;
+    });
+
+    var web_link = $('a.web-trackset-link');
+    web_link.unbind('click').click(function() {
+      chrome.tabs.create({url: 'https://play.spotify.com/trackset/' + 
+                               encodeURIComponent(name) + '/' + joined_ids});
+      return false;
+    });
+
+    $('h2').fadeIn();
+  },
+
   update_track_list: function(spotify_choice) {
     var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
       var tracks = data.tracks || {};
       var track_ids = me.get_sorted_track_ids(tracks);
+      me.setup_trackset_links(track_ids);
       me.populate_track_list(track_ids, tracks, spotify_choice);
     });
   },

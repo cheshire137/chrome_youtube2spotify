@@ -5,4 +5,3 @@ links on Reddit. Clicking the Spotify icon will start playing the track in
 Spotify, either in the web player or the desktop application.
 
 * Allow clearing track list in popup.
-* Add trackset links (web and app) to popup.

@@ -106,6 +106,12 @@ body.popup footer {
 body.popup footer a {
   display: inline;
 }
+body.popup h2 {
+  margin: 0 0 5px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
 body.popup header {
   background-color: #F8F8F8;
   padding: 10px;
