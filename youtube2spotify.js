@@ -136,6 +136,11 @@ var youtube2spotify = {
   },
 
   add_spotify_links_for_youtube_links: function(spotify_choice) {
+    if (this.get_current_youtube_video_id()) {
+      // Don't go littering YouTube with Spotify icons if we're currently on a
+      // YouTube video.
+      return;
+    }
     var links = this.get_youtube_links();
     var me = this;
     links.each(function() {
