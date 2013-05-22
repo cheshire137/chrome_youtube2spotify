@@ -54,7 +54,7 @@ var youtube2spotify_popup = {
             return false;
           });
         }
-        track_link.text(track_id);
+        track_link.text(track_data.name);
         li.append(track_link);
         list.append(li);
       }
