@@ -1,10 +1,10 @@
-# Chrome Extension: Youtube2Spotify
+# Chrome Extension: YouTube2Spotify
 
-This is a Chrome extension with the following goals:
+This is a Chrome extension that adds a Spotify icon next to YouTube music video 
+links on Reddit. Clicking the Spotify icon will start playing the track in 
+Spotify, either in the web player or the desktop application.
 
-* Add a Spotify link to music videos on YouTube. Clicking the link will do something with Spotify:
-    * Look up the song on Spotify, most def.
-    * Add the song to a general YouTube playlist in the authenticated Spotify account?
-    * Let you specify a playlist each time you want to save a YouTube song?
-    * Open the song on Spotify and start playing it?
-* Add a Spotify link next to posts on Reddit that go to a YouTube music video. This should help with playlist creation while you're browsing subreddits like [/r/Music](http://www.reddit.com/r/Music).
+## To-do List
+
+* Add a Spotify links to music videos on YouTube. Clicking the link will open the song in Spotify.
+* Allow creating a Spotify playlist from a subreddit like [/r/Music](http://www.reddit.com/r/Music) on [Reddit](http://www.reddit.com), using the latest/top YouTube links that have been posted.
