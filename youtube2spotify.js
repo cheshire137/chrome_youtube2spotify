@@ -117,11 +117,16 @@ var youtube2spotify = {
     return false;
   },
 
-  get_spotify_playlist_url: function(name, track_ids) {
-    return 'spotify:trackset:' + name + ':' + track_ids.join(',');
+  get_spotify_trackset_url: function(name, track_ids, spotify_choice) {
+    var joined_ids = track_ids.join(',');
+    if (spotify_choice === 'desktop_application') {
+      return 'spotify:trackset:' + name + ':' + joined_ids;
+    }
+    return 'https://play.spotify.com/trackset/' + encodeURIComponent(name) + 
+           '/' + joined_ids;
   },
 
-  get_playlist_name_for_current_url: function() {
+  get_trackset_name_for_current_url: function() {
     var playlist_name = this.get_current_subreddit();
     if (!playlist_name) {
       playlist_name = 'Playlist from ' + window.location.hostname;
@@ -176,7 +181,7 @@ var youtube2spotify = {
     });
   },
 
-  on_spotify_tracks_identified: function() {
+  on_spotify_tracks_identified: function(spotify_choice) {
     var tracks = [];
     $('a.spotify-track[data-track-id]').each(function() {
       tracks.push($(this).attr('data-track-id'));
@@ -185,9 +190,13 @@ var youtube2spotify = {
       return;
     }
     var header = $('.side .titlebox h1.redditname');
-    var playlist_name = this.get_playlist_name_for_current_url();
-    var url = this.get_spotify_playlist_url(playlist_name, tracks);
+    var playlist_name = this.get_trackset_name_for_current_url();
+    var url = this.get_spotify_trackset_url(playlist_name, tracks, 
+                                            spotify_choice);
     var spotify_link = $('<a href="' + url + '"></a>');
+    if (spotify_choice !== 'desktop_application') {
+      spotify_link.attr('target', '_blank');
+    }
     var title = 'Open playlist in Spotify';
     spotify_link.attr('title', title);
     var icon = this.get_spotify_image(title);
@@ -229,7 +238,7 @@ var youtube2spotify = {
       me.add_spotify_link_for_yt_link(
         $(this), spotify_choice, i === num_youtube_links - 1,
         function() {
-          me.on_spotify_tracks_identified();
+          me.on_spotify_tracks_identified(spotify_choice);
         }
       );
     });
