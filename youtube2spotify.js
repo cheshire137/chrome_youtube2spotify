@@ -75,7 +75,11 @@ var youtube2spotify = {
 
   get_subreddit: function(url) {
     // e.g., http://www.reddit.com/r/electronicmusic => electronicmusic
-    return url.split('/r/')[1].split(')')[0];
+    var subreddit_etc = url.split('/r/')[1];
+    if (subreddit_etc) {
+      return subreddit_etc.split('/')[0];
+    }
+    return subreddit_etc;
   },
 
   get_spotify_url: function(title, callback) {
@@ -177,6 +181,9 @@ var youtube2spotify = {
     $('a.spotify-track[data-track-id]').each(function() {
       tracks.push($(this).attr('data-track-id'));
     });
+    if (tracks.length < 1) {
+      return;
+    }
     var header = $('.side .titlebox h1.redditname');
     var playlist_name = this.get_playlist_name_for_current_url();
     var url = this.get_spotify_playlist_url(playlist_name, tracks);
