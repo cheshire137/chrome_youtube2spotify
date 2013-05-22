@@ -94,6 +94,14 @@ var youtube2spotify_popup = {
       data = data.youtube2spotify || {};
       var tracks = data.tracks || {};
       var track_ids = Object.keys(tracks);
+      track_ids.sort(function(a, b) {
+        var track_name_a = tracks[a].name;
+        var track_name_b = tracks[b].name;
+        if (track_name_a < track_name_b) {
+          return -1;
+        }
+        return track_name_a > track_name_b ? 1 : 0;
+      });
       for (var i=0; i<track_ids.length; i++) {
         var track_id = track_ids[i];
         list.append(
