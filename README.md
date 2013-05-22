@@ -18,5 +18,4 @@ Spotify, either in the web player or the desktop application.
 
 ## Bugs
 
-* When clearing track list, track count does not go to 0 until you reopen popup.
 * Don't duplicate Spotify link for tracklist upon successive popup opens.

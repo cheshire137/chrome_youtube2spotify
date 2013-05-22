@@ -37,6 +37,7 @@ var youtube2spotify_popup = {
   },
 
   setup_clear_tracks_link: function() {
+    var me = this;
     $('a[href="#clear-tracks"]').click(function() {
       chrome.storage.local.get('youtube2spotify', function(data) {
         data = data.youtube2spotify || {};
@@ -48,6 +49,7 @@ var youtube2spotify_popup = {
               $(this).remove();
             });
             $('h2').fadeOut();
+            me.display_track_count(0);
           }
         );
       });
