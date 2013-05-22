@@ -87,27 +87,36 @@ var youtube2spotify_popup = {
     return li;
   },
 
-  update_track_list: function(spotify_choice) {
+  populate_track_list: function(track_ids, tracks, spotify_choice) {
     var list = $('ul');
+    for (var i=0; i<track_ids.length; i++) {
+      var track_id = track_ids[i];
+      list.append(
+        this.create_track_list_item(tracks[track_id], spotify_choice)
+      );
+    }
+  },
+
+  get_sorted_track_ids: function(tracks) {
+    var track_ids = Object.keys(tracks);
+    track_ids.sort(function(a, b) {
+      var track_name_a = tracks[a].name;
+      var track_name_b = tracks[b].name;
+      if (track_name_a < track_name_b) {
+        return -1;
+      }
+      return track_name_a > track_name_b ? 1 : 0;
+    });
+    return track_ids;
+  },
+
+  update_track_list: function(spotify_choice) {
     var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
       var tracks = data.tracks || {};
-      var track_ids = Object.keys(tracks);
-      track_ids.sort(function(a, b) {
-        var track_name_a = tracks[a].name;
-        var track_name_b = tracks[b].name;
-        if (track_name_a < track_name_b) {
-          return -1;
-        }
-        return track_name_a > track_name_b ? 1 : 0;
-      });
-      for (var i=0; i<track_ids.length; i++) {
-        var track_id = track_ids[i];
-        list.append(
-          me.create_track_list_item(tracks[track_id], spotify_choice)
-        );
-      }
+      var track_ids = me.get_sorted_track_ids(tracks);
+      me.populate_track_list(track_ids, tracks, spotify_choice);
     });
   },
 
