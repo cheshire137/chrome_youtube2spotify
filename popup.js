@@ -56,6 +56,25 @@ var youtube2spotify_popup = {
         }
         track_link.text(track_data.name);
         li.append(track_link);
+        var artist_list = $('<ul class="artists"></ul>');
+        for (var j=0; j<track_data.artists.length; j++) {
+          var artist_data = track_data.artists[j];
+          var artist_li = $('<li></li>');
+          var artist_link = $('<a href=""></a>');
+          if (spotify_choice === 'desktop_application') {
+            artist_link.attr('href', artist_data.app_url);
+          } else {
+            artist_link.attr('href', artist_data.web_url);
+            artist_link.click(function() {
+              chrome.tabs.create({url: $(this).attr('href')});
+              return false;
+            });
+          }
+          artist_link.text(artist_data.name);
+          artist_li.append(artist_link);
+          artist_list.append(artist_li);
+        }
+        li.append(artist_list);
         list.append(li);
       }
     });

@@ -82,20 +82,32 @@ var youtube2spotify = {
     return subreddit_etc;
   },
 
+  get_spotify_track_search_url: function(query) {
+    return 'http://ws.spotify.com/search/1/track.json?q=' + 
+            encodeURIComponent(query);
+  },
+
   get_spotify_data: function(title, callback) {
-    var query_url = 'http://ws.spotify.com/search/1/track.json?q=' + 
-                    encodeURIComponent(title);
+    var query_url = this.get_spotify_track_search_url(title);
+    var me = this;
     $.getJSON(query_url, function(data) {
       if (data && data.info.num_results > 0) {
         var track = data.tracks[0];
         var track_name = track.name;
-        var artists = track.artists;
-        var artist_names = [];
-        for (var i=0; i<artists.length; i++) {
-          artist_names.push(artists[i].name);
+        var artists = [];
+        for (var i=0; i<track.artists.length; i++) {
+          var artist = track.artists[i];
+          artists.push({
+            name: artist.name,
+            app_url: artist.href,
+            web_url: me.get_spotify_artist_web_url(artist.href)
+          });
         }
-        var artist_name = artist_names.join(', ');
-        callback({url: track.href, name: track_name + ' - ' + artist_name});
+        var track_data = {app_url: track.href, name: track_name, 
+                          artists: artists,
+                          id: me.get_spotify_track_id(track.href),
+                          web_url: me.get_spotify_track_web_url(track.href)};
+        callback(track_data);
       } else {
         callback(false);
       }
@@ -124,6 +136,16 @@ var youtube2spotify = {
     return false;
   },
 
+  get_spotify_artist_web_url: function(app_url) {
+    var artist_id = app_url.split('spotify:artist:')[1];
+    return 'https://play.spotify.com/artist/' + artist_id;
+  },
+
+  get_spotify_track_web_url: function(app_url) {
+    return 'https://play.spotify.com/track/' + 
+           this.get_spotify_track_id(app_url);
+  },
+
   get_spotify_trackset_url: function(name, track_ids, spotify_choice) {
     var joined_ids = track_ids.join(',');
     if (spotify_choice === 'desktop_application') {
@@ -147,34 +169,19 @@ var youtube2spotify = {
              '" width="16" height="16">');
   },
 
-  on_spotify_url_retrieved: function(el, data, spotify_choice, is_last, callback) {
-    if (!data) {
-      if (is_last) {
-        callback();
-      }
-      return;
-    }
-    var track_id = data.url.split('spotify:track:')[1];
-    var spotify_link = $('<a href="" class="spotify-track"></a>');
-    spotify_link.attr('data-track-id', track_id);
-    var web_url = 'https://play.spotify.com/track/' + track_id;
-    spotify_link.attr('data-web-url', web_url);
-    spotify_link.attr('data-app-url', data.url);
-    spotify_link.attr('data-name', data.name.replace(/"/g, "'"));
-    if (spotify_choice === 'desktop_application') {
-      spotify_link.attr('href', data.url);
-    } else {
-      spotify_link.attr('href', web_url);
-      spotify_link.attr('target', '_blank');
-    }
-    spotify_link.css('vertical-align', 'middle');
-    spotify_link.css('display', 'inline-block');
-    var title = 'Open track in Spotify';
-    spotify_link.attr('title', title);
-    var icon = this.get_spotify_image(title);
-    spotify_link.append(icon);
-    spotify_link.insertAfter(el);
-    if (is_last) {
+  get_spotify_track_id: function(app_url) {
+    return app_url.split('spotify:track:')[1];
+  },
+
+  on_spotify_data_retrieved: function(el, data, s_choice, is_last, callback) {
+    if (data) {
+      this.add_spotify_track_link(el, data, s_choice);
+      this.store_track_data(data, function() {
+        if (is_last) {
+          callback();
+        }
+      });
+    } else if (is_last) {
       callback();
     }
   },
@@ -188,33 +195,30 @@ var youtube2spotify = {
     }
     var me = this;
     this.get_spotify_data(title, function(data) {
-      me.on_spotify_url_retrieved(el, data, s_choice, is_last, callback);
+      me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
     });
   },
 
-  store_track_data: function(track_links, callback) {
-    var tracks = {};
-    track_links.each(function() {
-      var link = $(this);
-      var track_id = link.attr('data-track-id');
-      tracks[track_id] = {
-        app_url: link.attr('data-app-url'),
-        web_url: link.attr('data-web-url'),
-        name: link.attr('data-name')
-      };
-    });
-    var data = {tracks: tracks};
-    console.log(data);
-    chrome.storage.local.set({'youtube2spotify': data}, function() {
-      callback(tracks);
+  store_track_data: function(single_track_data, callback) {
+    chrome.storage.local.get('youtube2spotify', function(data) {
+      data = data.youtube2spotify || {};
+      var tracks = data.tracks || {};
+      tracks[single_track_data.id] = single_track_data;
+      data.tracks = tracks;
+      chrome.storage.local.set({'youtube2spotify': data}, function() {
+        callback();
+      });
     });
   },
 
-  add_trackset_link: function(track_data, spotify_choice) {
-    if (track_data.length < 1) {
+  add_spotify_trackset_link: function(spotify_choice) {
+    var tracks = [];
+    $('a.spotify-track[data-track-id]').each(function() {
+      tracks.push($(this).attr('data-track-id'));
+    });
+    if (tracks.length < 1) {
       return;
     }
-    var tracks = Object.keys(track_data);
     var header = $('.side .titlebox h1.redditname');
     var playlist_name = this.get_trackset_name_for_current_url();
     var url = this.get_spotify_trackset_url(playlist_name, tracks, 
@@ -231,13 +235,26 @@ var youtube2spotify = {
     header.append(spotify_link);
   },
 
+  add_spotify_track_link: function(el, data, spotify_choice) {
+    var spotify_link = $('<a href="" class="spotify-track"></a>');
+    spotify_link.attr('data-track-id', data.id);
+    if (spotify_choice === 'desktop_application') {
+      spotify_link.attr('href', data.app_url);
+    } else {
+      spotify_link.attr('href', data.web_url);
+      spotify_link.attr('target', '_blank');
+    }
+    spotify_link.css('vertical-align', 'middle');
+    spotify_link.css('display', 'inline-block');
+    var title = 'Open track in Spotify';
+    spotify_link.attr('title', title);
+    var icon = this.get_spotify_image(title);
+    spotify_link.append(icon);
+    spotify_link.insertAfter(el);
+  },
+
   on_spotify_tracks_identified: function(spotify_choice, callback) {
-    var track_links = $('a.spotify-track[data-track-id]');
-    var me = this;
-    this.store_track_data(track_links, function(track_data) {
-      me.add_trackset_link(track_data, spotify_choice);
-      callback();
-    });
+    this.add_spotify_trackset_link(spotify_choice);
   },
 
   on_spotify_links_updated: function(spotify_choice) {

@@ -119,6 +119,29 @@ body.popup header h1 {
 body.popup section {
   padding: 10px;
 }
+body.popup ul {
+  padding-left: 0;
+  list-style: none;
+}
+body.popup ul > li + li {
+  border-top: 1px solid #ddd;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+body.popup ul a, body.popup ul a:link, body.popup ul a:visited,
+body.popup ul a:active {
+  color: #6E8F00;
+}
+body.popup ul a:hover, body.popup ul a:focus {
+  color: #425600;
+}
+body.popup ul.artists a, body.popup ul.artists a:link,
+body.popup ul.artists a:visited, body.popup ul.artists a:active {
+  color: #999;
+}
+body.popup ul.artists a:hover, body.popup ul.artists a:focus {
+  color: #666;
+}
 .btn-container {
   display: inline-block;
   width: 45%;
@@ -213,4 +236,12 @@ small {
   position: absolute;
   width: 100%;
   top: 2.3em;
+}
+ul.artists {
+  padding-left: 0;
+  list-style: none;
+}
+ul.artists li {
+  text-transform: uppercase;
+  font-size: 11px;
 }
