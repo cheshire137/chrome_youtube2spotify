@@ -343,7 +343,6 @@ youtube2spotify.add_spotify_links(function(spotify_choice) {
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.action === 'check_for_youtube_links') {
-    console.log('checking for more YouTube links...');
     youtube2spotify.add_spotify_links(function(spotify_choice) {
       youtube2spotify.on_spotify_links_updated(spotify_choice);
     });

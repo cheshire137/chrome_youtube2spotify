@@ -108,6 +108,7 @@ var youtube2spotify_popup = {
 
   populate_track_list: function(track_ids, tracks, spotify_choice) {
     var list = $('ul');
+    list.empty();
     for (var i=0; i<track_ids.length; i++) {
       var track_id = track_ids[i];
       list.append(
@@ -183,7 +184,13 @@ var youtube2spotify_popup = {
 $(function() {
   youtube2spotify_popup.on_popup_opened();
   chrome.tabs.getSelected(null, function(tab) {
-    chrome.tabs.sendRequest(tab.id, {action: 'check_for_youtube_links'});
+    chrome.tabs.sendRequest(
+      tab.id, 
+      {action: 'check_for_youtube_links'},
+      function(spotify_choice) {
+        youtube2spotify_popup.update_track_list(spotify_choice);
+      }
+    );
   });
 });
 
