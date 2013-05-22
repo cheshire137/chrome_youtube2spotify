@@ -299,11 +299,12 @@ var youtube2spotify = {
 
   on_spotify_tracks_identified: function(spotify_choice, callback) {
     this.add_spotify_trackset_link(spotify_choice);
+    callback();
   },
 
-  on_spotify_links_updated: function(spotify_choice) {
+  on_tracks_updated: function(spotify_choice) {
     chrome.extension.sendRequest({
-      action: 'spotify_links_updated',
+      action: 'spotify_tracks_updated',
       spotify_choice: spotify_choice
     });
   },
@@ -329,14 +330,13 @@ var youtube2spotify = {
   },
 
   add_spotify_links_for_youtube_links: function(spotify_choice, callback) {
-    if (this.get_current_youtube_video_id()) {
-      // Don't go littering YouTube with Spotify icons if we're currently on a
-      // YouTube video.
-      return;
-    }
     var youtube_links = this.get_youtube_links();
     var me = this;
     var num_youtube_links = youtube_links.length;
+    if (num_youtube_links < 1) {
+      callback();
+      return;
+    }
     youtube_links.each(function(i) {
       me.add_spotify_link_for_yt_link(
         $(this), spotify_choice, i === num_youtube_links - 1,
@@ -382,13 +382,12 @@ var youtube2spotify = {
 };
 
 youtube2spotify.add_spotify_links(function(spotify_choice) {
-  youtube2spotify.on_spotify_links_updated(spotify_choice);
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.action === 'check_for_youtube_links') {
     youtube2spotify.add_spotify_links(function(spotify_choice) {
-      youtube2spotify.on_spotify_links_updated(spotify_choice);
+      youtube2spotify.on_tracks_updated(spotify_choice);
     });
   }
 });

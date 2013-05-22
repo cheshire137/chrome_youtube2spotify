@@ -215,7 +215,7 @@ $(function() {
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  if (request.action == 'spotify_links_updated') {
+  if (request.action == 'spotify_tracks_updated') {
     youtube2spotify_popup.update_track_list(request.spotify_choice);
   }
 });
