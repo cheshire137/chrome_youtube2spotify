@@ -34,48 +34,71 @@ var youtube2spotify_popup = {
     });
   },
 
+  create_artist_link: function(artist_data, spotify_choice) {
+    var artist_link = $('<a href=""></a>');
+    if (spotify_choice === 'desktop_application') {
+      artist_link.attr('href', artist_data.app_url);
+    } else {
+      artist_link.attr('href', artist_data.web_url);
+      artist_link.click(function() {
+        chrome.tabs.create({url: $(this).attr('href')});
+        return false;
+      });
+    }
+    artist_link.text(artist_data.name);
+    return artist_link;
+  },
+
+  create_artist_list_item: function(artist_data, spotify_choice) {
+    var artist_li = $('<li></li>');
+    artist_li.append(this.create_artist_link(artist_data, spotify_choice));
+    return artist_li;
+  },
+
+  create_artist_list: function(track_data, spotify_choice) {
+    var artist_list = $('<ul class="artists"></ul>');
+    for (var j=0; j<track_data.artists.length; j++) {
+      artist_list.append(
+        this.create_artist_list_item(track_data.artists[j], spotify_choice)
+      );
+    }
+    return artist_list;
+  },
+
+  create_track_link: function(track_data, spotify_choice) {
+    var track_link = $('<a href=""></a>');
+    if (spotify_choice === 'desktop_application') {
+      track_link.attr('href', track_data.app_url);
+    } else {
+      track_link.attr('href', track_data.web_url);
+      track_link.click(function() {
+        chrome.tabs.create({url: $(this).attr('href')});
+        return false;
+      });
+    }
+    track_link.text(track_data.name);
+    return track_link;
+  },
+
+  create_track_list_item: function(track_data, spotify_choice) {
+    var li = $('<li></li>');
+    li.append(this.create_track_link(track_data, spotify_choice));
+    li.append(this.create_artist_list(track_data, spotify_choice));
+    return li;
+  },
+
   update_track_list: function(spotify_choice) {
     var list = $('ul');
+    var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
       var tracks = data.tracks || {};
       var track_ids = Object.keys(tracks);
       for (var i=0; i<track_ids.length; i++) {
         var track_id = track_ids[i];
-        var track_data = tracks[track_id];
-        var li = $('<li></li>');
-        var track_link = $('<a href=""></a>');
-        if (spotify_choice === 'desktop_application') {
-          track_link.attr('href', track_data.app_url);
-        } else {
-          track_link.attr('href', track_data.web_url);
-          track_link.click(function() {
-            chrome.tabs.create({url: $(this).attr('href')});
-            return false;
-          });
-        }
-        track_link.text(track_data.name);
-        li.append(track_link);
-        var artist_list = $('<ul class="artists"></ul>');
-        for (var j=0; j<track_data.artists.length; j++) {
-          var artist_data = track_data.artists[j];
-          var artist_li = $('<li></li>');
-          var artist_link = $('<a href=""></a>');
-          if (spotify_choice === 'desktop_application') {
-            artist_link.attr('href', artist_data.app_url);
-          } else {
-            artist_link.attr('href', artist_data.web_url);
-            artist_link.click(function() {
-              chrome.tabs.create({url: $(this).attr('href')});
-              return false;
-            });
-          }
-          artist_link.text(artist_data.name);
-          artist_li.append(artist_link);
-          artist_list.append(artist_li);
-        }
-        li.append(artist_list);
-        list.append(li);
+        list.append(
+          me.create_track_list_item(tracks[track_id], spotify_choice)
+        );
       }
     });
   },
