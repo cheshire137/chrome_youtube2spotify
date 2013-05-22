@@ -315,6 +315,9 @@ var youtube2spotify = {
     if (el.length < 1) {
       el = $('#player-api');
     }
+    if (el.next('.spotify-track').length > 0) {
+      return;
+    }
     this.add_spotify_link_for_element(el, video_id, spotify_choice, true, 
                                       callback);
   },
