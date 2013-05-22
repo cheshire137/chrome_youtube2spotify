@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <title>YouTube2Spotify Extension Options</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="youtube2spotify.css">
+  </head>
+  <body class="options">
+    <div class="container">
+      <div class="header">
+        <img src="icon48.png" width="48" height="48" alt="YouTube2Spotify logo" class="pull-left logo">
+        <h1>YouTube2Spotify Options</h1>
+        <hr>
+      </div>
+      <p id="status-message" class="hidden alert"></p>
+      <fieldset>
+        <legend>Spotify</legend>
+        <div class="controls">
+          <label for="web_player">
+            <input type="radio" name="spotify" id="web_player" value="web_player">
+            Web player (default)
+          </label>
+          <label for="desktop_application">
+            <input type="radio" name="spotify" id="desktop_application" value="desktop_application">
+            Desktop application
+          </label>
+        </div>
+        <p class="help-block">
+          Choose how to open Spotify links.
+        </p>
+      </fieldset>
+      <div class="footer">
+        <hr>
+        &copy; 2013 Sarah Vessels
+        <span>&middot;</span>
+        <a href="https://github.com/moneypenny/chrome_youtube2spotify">View source code</a>
+      </div>
+    </div>
+    <script src="jquery-2.0.0.min.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
