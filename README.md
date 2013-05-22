@@ -7,6 +7,8 @@ Spotify, either in the web player or the desktop application.
 ## Feature To-do List
 
 * Update popup while you're looking at it with new tracks that were found.
+* Allow pulling a playlist from the Reddit API, instead of just links on the current Reddit page.
+* Incorporate other sites, like Soundcloud or Vimeo, and try to find their Spotify tracks.
 
 ## Bugs
 
