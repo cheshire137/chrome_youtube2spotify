@@ -18,6 +18,5 @@ Spotify, either in the web player or the desktop application.
 
 ## Bugs
 
-* Some tracks show up in list without name, just artist. See /r/ClassicalMusic.
 * When clearing track list, track count does not go to 0 until you reopen popup.
 * Don't duplicate Spotify link for tracklist upon successive popup opens.

@@ -142,11 +142,11 @@ body.popup ul a:active {
 body.popup ul a:hover, body.popup ul a:focus {
   color: #425600;
 }
-body.popup ul.artists a, body.popup ul.artists a:link,
-body.popup ul.artists a:visited, body.popup ul.artists a:active {
+body.popup p.artists a, body.popup p.artists a:link,
+body.popup p.artists a:visited, body.popup p.artists a:active {
   color: #999;
 }
-body.popup ul.artists a:hover, body.popup ul.artists a:focus {
+body.popup p.artists a:hover, body.popup p.artists a:focus {
   color: #666;
 }
 .btn-container {
@@ -230,6 +230,11 @@ label + label {
 .logo {
   margin-right: 20px;
 }
+p.artists {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 11px;
+}
 .pull-left {
   float: left;
 }
@@ -250,12 +255,4 @@ span.separator {
 }
 #track-count {
   display: inline;
-}
-ul.artists {
-  padding-left: 0;
-  list-style: none;
-}
-ul.artists li {
-  text-transform: uppercase;
-  font-size: 11px;
 }

@@ -27,6 +27,8 @@
 // })();
 
 var youtube2spotify_popup = {
+  max_display_artists: 3,
+
   setup_options_link: function() {
     $('a[href="#options"]').click(function() {
       chrome.tabs.create({url: chrome.extension.getURL("options.html")});
@@ -68,20 +70,36 @@ var youtube2spotify_popup = {
     return artist_link;
   },
 
-  create_artist_list_item: function(artist_data, spotify_choice) {
-    var artist_li = $('<li></li>');
-    artist_li.append(this.create_artist_link(artist_data, spotify_choice));
-    return artist_li;
-  },
-
   create_artist_list: function(track_data, spotify_choice) {
-    var artist_list = $('<ul class="artists"></ul>');
-    for (var j=0; j<track_data.artists.length; j++) {
-      artist_list.append(
-        this.create_artist_list_item(track_data.artists[j], spotify_choice)
+    var artist_p = $('<p class="artists"></p>');
+    var num_artists = track_data.artists.length;
+    var num_to_display = Math.min(num_artists, this.max_display_artists);
+    var separator = ', ';
+    var me = this;
+    var append_to_area = function(i, area, max) {
+      area.append(
+        me.create_artist_link(track_data.artists[i], spotify_choice)
       );
+      if (i < max - 1) {
+        area.append(separator);
+      }
+    };
+    for (var i=0; i<num_to_display; i++) {
+      append_to_area(i, artist_p, num_to_display);
     }
-    return artist_list;
+    if (num_to_display < num_artists) {
+      var collapse_area = $('<span class="more-artists hidden"></span>');
+      for (var i=num_to_display; i<num_artists; i++) {
+        append_to_area(i, collapse_area, num_artists);
+      }
+      var toggle_link = $('<a href="">More &raquo;</a><br>');
+      toggle_link.click(function() {
+        collapse_area.fadeToggle();
+        return false;
+      });
+      artist_p.append(separator).append(toggle_link).append(collapse_area);
+    }
+    return artist_p;
   },
 
   create_track_link: function(track_data, spotify_choice) {
