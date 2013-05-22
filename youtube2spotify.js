@@ -226,7 +226,7 @@ var youtube2spotify = {
     var playlist_name = this.get_trackset_name_for_current_url();
     var url = this.get_spotify_trackset_url(playlist_name, tracks, 
                                             spotify_choice);
-    var spotify_link = $('<a href="' + url + '"></a>');
+    var spotify_link = $('<a href="' + url + '" class="trackset-link"></a>');
     if (spotify_choice !== 'desktop_application') {
       spotify_link.attr('target', '_blank');
     }
@@ -235,6 +235,7 @@ var youtube2spotify = {
     var icon = this.get_spotify_image(title);
     spotify_link.append(icon);
     spotify_link.css('padding-left', '5px');
+    header.children('.trackset-link').remove();
     header.append(spotify_link);
   },
 
