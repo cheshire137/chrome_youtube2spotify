@@ -24,7 +24,7 @@ Tracks' link to remove all songs from the list and start over.
 You can choose whether to open Spotify links in the web player (default) or in
 the desktop application.
 
-## Why did you make this extension?
+## Why does this extension exist?
 
 I subscribe to a lot of music subreddits on Reddit but I never find myself 
 clicking their links for a few reasons:
