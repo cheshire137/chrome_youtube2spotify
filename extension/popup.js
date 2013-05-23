@@ -67,11 +67,11 @@ var youtube2spotify_popup = {
     } else {
       artist_link.attr('href', artist_data.web_url);
       artist_link.attr('title', 'View artist in Spotify web player');
-      artist_link.click(function() {
-        chrome.tabs.create({url: $(this).attr('href')});
-        return false;
-      });
     }
+    artist_link.click(function() {
+      chrome.tabs.create({url: $(this).attr('href')});
+      return false;
+    });
     artist_link.text(artist_data.name);
     return artist_link;
   },
