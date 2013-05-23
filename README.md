@@ -24,6 +24,21 @@ Tracks' link to remove all songs from the list and start over.
 You can choose whether to open Spotify links in the web player (default) or in
 the desktop application.
 
+## Finding Music Subreddits
+
+For easy playlist creation, try visiting multiple music subreddits combined into 
+one:
+
+* [Classical music](http://www.reddit.com/r/composer+baroque+classicalmusic+contemporary+concertband+choralmusic+ChamberMusic+EarlyMusic+earlymusicalnotation+ElitistClassical+icm+Opera+orchestra)
+* [Electronic](http://www.reddit.com/r/acidhouse+ambientmusic+AStateOfTrance+AtmosphericDnB+breakbeat+breakcore+brostep+chicagohouse+Chipbreak+Chiptunes+complextro+darkstep+DnB+DubStep+electronicdancemusic+ElectronicJazz+ElectronicBlues+electrohiphop+electrohouse+ElectronicMusic+electropop+electroswing+ExperimentalMusic+fidget+filth+freestylemusic+frenchelectro+frenchhouse+funkhouse+fusiondancemusic+futurebeats+FutureFunkAirlines+FutureGarage+futuresynth+gabber+glitch+glitchop+Grime+happyhardcore+hardhouse+hardstyle+house+idm+industrialmusic+ItaloDisco+LiquidDubstep+mashups+minimal+mixes+moombahcore+nightstep+OldskoolRave+partymusic+psybient+PsyBreaks+psytrance+purplemusic+raggajungle+RealDubstep+skweee+swinghouse+tech_house+Techno+Trance+tranceandbass+trap+tribalbeats+turntablists+ukfunky)
+* [Rock](http://www.reddit.com/r/80sHardcorePunk+90sAlternative+90sRock+AlternativeRock+AltCountry+AORMelodic+ausmetal Australian Metal+BlackMetal+bluegrass+Blues+bluesrock+CanadianClassicRock+CanadianMusic+ClassicRock+country+Christcore+crunkcore+deathcore+deathmetal+Djent+DoomMetal+EmoScreamo+folk+folkmetal+folkpunk+folkrock+GaragePunk+GothicMetal+Grunge+hardcore+HardRock+horrorpunk+indie_rock+jrock+krautrock+MathRock+melodicdeathmetal+MelodicMetal+MetalNews+metal+metalcore+monsterfuzz+neopsychedelia+NewWave+noiserock+numetal+pianorock+poppunkers+PostHardcore+PostRock+powermetal+powerpop+ProgMetal+progrockmusic+PsychedelicRock+punk+Punkskahardcore+Punk_Rock+Rock+shoegaze+stonerrock+symphonicblackmetal+symphonicmetal+synthrock+truethrash+Truemetal+OutlawCountry+WomenRock)
+* [Hip hop](http://www.reddit.com/r/90sHipHop+altrap+asianrap+backspin+ChapHop+Gfunk+HipHopHeads+Rap+rapverses+trapmuzik+Turntablists)
+* [Any genre](http://www.reddit.com/r/danktunes+albumaday+albumoftheday+Albums+albumlisteners+bassheavy+Catchysongs+CircleMusic+CoverSongs+DutchMusic+EarlyMusic+earlymusicalnotation+FemaleVocalists+findaband+freemusic+Frisson+gameofbands+GayMusic+germusic+HeadNodders+heady+HeyThatWasIn+HighFidelity+ifyoulikeblank+indie+ipm+IndieWok+japanesemusic+LetsTalkMusic+listentoconcerts+listentomusic+ListenToThis+ListenToUs+livemusic+Lyrics+mainstreammusic+MiddleEasternMusic+Music+MusicAlbums+musicsuggestions+MusicToSleepTo+musicvideos+NewAlbums+newmusic+onealbumaweek+partymusic+RedditOriginals+RepublicOfMusic+RoyaltyFreeMusic+SpotifyMusic+ThemVoices+unheardof+WTFMusicVideos)
+* [Miscellaneous](http://www.reddit.com/r/70s+Acappella+AcousticCovers+afrobeat+animemusic+balkanbrass+balkanmusic+boomswing+bossanova+britpop+carmusic+concerts+chillmusic+cpop+CrappyMusic+dembow+disco+DreamPop+Exotica+FilmMusic+folkpunk+FunkSouMusic+gamemusic+GypsyJazz+HispanicMusic+IndieFolk+Irishmusic+ItalianMusic+jambands+jazz+jpop+kpop+listentoconcerts+klezmer+lt10k+MelancholyMusic+minimalism_music+motown+MovieMusic+muzyka+oldiemusic+pianocovers+PopMusic+rainymood+recordstorefinds+reggae+remixxd+RetroMusic+rnb+rootsmusic+SalsaMusic+Ska+songbooks+Soulies+SoundsVintage+SpaceMusic+swing+Tango+TheRealBookVideos+TouhouMusic+treemusic+triphop+VintageObscura+vocaloid+WorldMusic)
+
+Find individual music subreddits in 
+[the /r/Music wiki](http://www.reddit.com/r/Music/wiki/musicsubreddits).
+
 ## Why does this extension exist?
 
 I subscribe to a lot of music subreddits on Reddit but I never find myself 
