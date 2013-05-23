@@ -140,6 +140,9 @@ var youtube2spotify = {
   },
 
   get_spotify_artist_web_url: function(app_url) {
+    if (!app_url) {
+      return app_url;
+    }
     var artist_id = app_url.split('spotify:artist:')[1];
     return 'https://play.spotify.com/artist/' + artist_id;
   },

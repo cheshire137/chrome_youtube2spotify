@@ -60,18 +60,25 @@ var youtube2spotify_popup = {
   },
 
   create_artist_link: function(artist_data, spotify_choice) {
+    if (!artist_data.app_url && !artist_data.web_url && !artist_data.name) {
+      return false;
+    }
     var artist_link = $('<a href=""></a>');
-    if (spotify_choice === 'desktop_application') {
+    if (spotify_choice === 'desktop_application' && artist_data.app_url) {
       artist_link.attr('href', artist_data.app_url);
       artist_link.attr('title', 'View artist in Spotify');
-    } else {
+    } else if (artist_data.web_url) {
       artist_link.attr('href', artist_data.web_url);
       artist_link.attr('title', 'View artist in Spotify web player');
+    } else {
+      artist_link = $('<span class="artist-without-link"></span>');
     }
-    artist_link.click(function() {
-      chrome.tabs.create({url: $(this).attr('href')});
-      return false;
-    });
+    if (artist_link.attr('href') !== undefined) {
+      artist_link.click(function() {
+        chrome.tabs.create({url: $(this).attr('href')});
+        return false;
+      });
+    }
     artist_link.text(artist_data.name);
     return artist_link;
   },
@@ -83,11 +90,13 @@ var youtube2spotify_popup = {
     var separator = ', ';
     var me = this;
     var append_to_area = function(i, area, max) {
-      area.append(
-        me.create_artist_link(track_data.artists[i], spotify_choice)
-      );
-      if (i < max - 1) {
-        area.append(separator);
+      var artist_link = me.create_artist_link(track_data.artists[i], 
+                                              spotify_choice);
+      if (artist_link) {
+        area.append(artist_link);
+        if (i < max - 1) {
+          area.append(separator);
+        }
       }
     };
     for (var i=0; i<num_to_display; i++) {
