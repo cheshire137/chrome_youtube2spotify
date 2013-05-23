@@ -276,7 +276,7 @@ var youtube2spotify = {
     spotify_link.append(icon);
     spotify_link.css('padding-left', '5px');
     header.children('.trackset-link').remove();
-    header.append(spotify_link);
+    header.append(spotify_link).show();
   },
 
   add_spotify_track_link: function(el, data, spotify_choice) {
