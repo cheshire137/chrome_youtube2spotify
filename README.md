@@ -1,4 +1,4 @@
-# Chrome Extension: YouTube to Spotify Playlister
+# YouTube to Spotify Playlister
 
 This is a Chrome extension that adds a Spotify icon next to YouTube music video 
 links on Reddit. Clicking the Spotify icon will start playing the track in 
@@ -12,7 +12,7 @@ On YouTube, if a music video is found on Spotify, a Spotify icon will appear
 next to the video name. Clicking that icon will start playing the track in
 Spotify.
 
-Clicking the icon ![YouTube to Spotify Playlister icon](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/icon48.png) in your Chrome 
+Clicking the ![YouTube to Spotify Playlister icon](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/icon20.png) icon in your Chrome 
 window will open a popup showing all the Spotify tracks found so far. You can
 keep adding to this list by browsing other Reddit pages or YouTube videos.
 When you're ready, click the 'web player' or 'desktop app' links to open the
@@ -23,6 +23,15 @@ Tracks' link to remove all songs from the list and start over.
 
 You can choose whether to open Spotify links in the web player (default) or in
 the desktop application.
+
+## Why did you make this extension?
+
+I subscribe to a lot of music subreddits on Reddit but I never find myself 
+clicking their links for a few reasons:
+
+* I'm already listening to a playlist in Spotify and don't want to stop what I'm listening to just to play one song on YouTube.
+* I'm browsing on my iPad and don't want to watch a video on YouTube. I want background music playing while I do other things.
+* Sometimes I want to make new playlists but I don't know which songs to choose. The music subreddits often have good suggestions, but I don't want to manually go through them and look up each song on Spotify myself.
 
 ## Screenshots
 
