@@ -1,19 +1,20 @@
 {
   "manifest_version": 2,
   "name": "YouTube2Spotify",
-  "description": "This looks up YouTube music videos on Spotify. Also links videos to Spotify tracks on Reddit.",
+  "description": "This extension allows Spotify playlist creation from YouTube links on Reddit.",
   "version": "0.0.0.1",
   "permissions": [
-    "tabs", "<all_urls>", "storage"
+    "tabs", "storage", "*://*.reddit.com/*", "*://*.redd.it/*", 
+    "*://*.youtube.com/*", "*://*.youtu.be/*", "*://reddit.com/*", 
+    "*://redd.it/*", "*://youtube.com/*", "*://youtu.be/*"
   ],
   "content_scripts": [
     {
       "all_frames": true,
-      "matches": ["http://www.reddit.com/*", "https://www.reddit.com/*", 
-                  "http://reddit.com/*", "https://reddit.com/*",
-                  "http://www.youtube.com/*", "https://www.youtube.com/*", 
-                  "http://youtube.com/*", "https://youtube.com/*"],
-      "js": ["jquery-2.0.0.min.js", "youtube2spotify.js"]
+      "matches": ["*://*.reddit.com/*", "*://*.redd.it/*", 
+                  "*://*.youtube.com/*", "*://*.youtu.be/*", "*://reddit.com/*", 
+                  "*://redd.it/*", "*://youtube.com/*", "*://youtu.be/*"],
+      "js": ["jquery-2.0.0.min.js", "content_script.js"]
     }
   ],
   "options_page": "options.html",

@@ -177,13 +177,6 @@ fieldset legend {
   color: #999;
   font-style: italic;
 }
-#focus-stealer {
-  position: absolute;
-  left: -900px;
-  top: 0;
-  width: 1px;
-  height: 1px;
-}
 .footer {
   font-size: 12px;
   color: #888;
