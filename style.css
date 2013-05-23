@@ -205,6 +205,9 @@ h2 {
   color: #909090;
   margin: 0;
 }
+h2 a:hover, h2 a:focus {
+  text-decoration: underline;
+}
 .header {
   margin-bottom: 40px;
 }

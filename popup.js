@@ -61,8 +61,10 @@ var youtube2spotify_popup = {
     var artist_link = $('<a href=""></a>');
     if (spotify_choice === 'desktop_application') {
       artist_link.attr('href', artist_data.app_url);
+      artist_link.attr('title', 'View artist in Spotify');
     } else {
       artist_link.attr('href', artist_data.web_url);
+      artist_link.attr('title', 'View artist in Spotify web player');
       artist_link.click(function() {
         chrome.tabs.create({url: $(this).attr('href')});
         return false;
@@ -108,8 +110,10 @@ var youtube2spotify_popup = {
     var track_link = $('<a href=""></a>');
     if (spotify_choice === 'desktop_application') {
       track_link.attr('href', track_data.app_url);
+      track_link.attr('title', 'Listen to track in Spotify');
     } else {
       track_link.attr('href', track_data.web_url);
+      track_link.attr('title', 'Listen to track in Spotify web player');
     }
     track_link.click(function() {
       chrome.tabs.create({url: $(this).attr('href')});

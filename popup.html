@@ -1,34 +1,34 @@
 <!doctype html>
 <html>
   <head>
-    <title>YouTube2Spotify Extension Popup</title>
+    <title>YouTube to Spotify Playlister Extension Popup</title>
     <link rel="stylesheet" type="text/css" media="screen" href="style.css">
     <script src="jquery-2.0.0.min.js"></script>
     <script src="popup.js"></script>
   </head>
   <body class="popup">
     <header class="clearfix">
-      <img src="icon48.png" alt="YouTube2Spotify logo" width="48" height="48" class="pull-left logo">
+      <img src="icon48.png" alt="YouTube to Spotify Playlister logo" width="48" height="48" class="pull-left logo">
       <h1>
-        <small>YouTube2Spotify</small>
+        <small>YouTube &rarr; Spotify</small>
         <span id="track-count"></span>
         Tracks
       </h1>
     </header>
     <h2 class="hidden">
-      Playlist:
-      <a href="#" class="web-trackset-link">web player</a>
-      &middot;
-      <a href="#" class="app-trackset-link">desktop application</a>
+      Open playlist:
+      <a href="#" class="web-trackset-link" title="Open tracks in Spotify web player">web player</a>
+      <span class="separator">&middot;</span>
+      <a href="#" class="app-trackset-link" title="Open tracks in Spotify desktop application">desktop app</a>
     </h2>
     <section>
       <ul></ul>
     </section>
     <footer>
       <small>
-        <a href="#options">Options</a>
+        <a href="#options" title="Change extension settings">Options</a>
         <span class="separator">&middot;</span>
-        <a href="#clear-tracks">Clear Tracks</a>
+        <a href="#clear-tracks" title="Reset playlist, start over">Clear Tracks</a>
       </small>
     </footer>
   </body>
