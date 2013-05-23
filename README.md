@@ -33,6 +33,10 @@ clicking their links for a few reasons:
 * I'm browsing on my iPad and don't want to watch a video on YouTube. I want background music playing while I do other things.
 * Sometimes I want to make new playlists but I don't know which songs to choose. The music subreddits often have good suggestions, but I don't want to manually go through them and look up each song on Spotify myself.
 
+While I can't use this extension on my iPad, I don't have to feel sad anymore
+when I scroll right past all those YouTube links, because I know I'll just make
+a playlist later on my computer.
+
 ## Screenshots
 
 ![Screenshot of YouTube to Spotify Playlister](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/screenshot.png)
