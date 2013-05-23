@@ -8,6 +8,8 @@ This extension also adds a Spotify icon next to the subreddit name on Reddit.
 Clicking this icon will open a list of all the Spotify tracks found on the page.
 You can turn this track listing into a playlist on Spotify.
 
+**[Install on the Chrome Web Store](https://chrome.google.com/webstore/detail/youtube-to-spotify-playli/jjonmcnlocomckeohpoeilmjfmkgocai)**
+
 On YouTube, if a music video is found on Spotify, a Spotify icon will appear 
 next to the video name. Clicking that icon will start playing the track in
 Spotify.
