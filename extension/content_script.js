@@ -231,24 +231,17 @@ var youtube2spotify = {
     return title;
   },
 
-  on_spotify_data_retrieved: function(el, data, s_choice, is_last, callback) {
-    if (el) {
-      this.add_spotify_track_link(el, data, s_choice);
-    }
+  on_spotify_data_retrieved: function(data, s_choice, callback) {
     this.store_track_data(data, function() {
-      if (is_last) {
-        callback();
-      }
+      callback(data);
     });
   },
 
-  spotify_match_attempt3: function(el, title, s_choice, is_last, callback) {
+  spotify_match_attempt3: function(title, s_choice, callback) {
     var words = title.split(' ');
     var num_words = words.length;
     if (num_words < 1) {
-      if (is_last) {
-        callback();
-      }
+      callback(false);
       return;
     }
     var correct_words = [];
@@ -257,9 +250,9 @@ var youtube2spotify = {
       var corrected_title = correct_words.join(' ');
       me.get_spotify_data(corrected_title, function(data) {
         if (data) {
-          me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
-        } else if (is_last) {
-          callback();
+          me.on_spotify_data_retrieved(data, s_choice, callback);
+        } else {
+          callback(false);
         }
       });
     };
@@ -278,38 +271,35 @@ var youtube2spotify = {
     spellcheck(0);
   },
 
-  spotify_match_attempt2: function(el, title, s_choice, is_last, callback) {
+  spotify_match_attempt2: function(title, s_choice, callback) {
     var cleaned_title = this.clean_youtube_title(title);
     var me = this;
     this.get_spotify_data(cleaned_title, function(data) {
       if (data) {
-        me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
+        me.on_spotify_data_retrieved(data, s_choice, callback);
       } else {
-        me.spotify_match_attempt3(el, cleaned_title, s_choice, is_last, 
-                                  callback);
+        me.spotify_match_attempt3(cleaned_title, s_choice, callback);
       }
     });
   },
 
-  spotify_match_attempt1: function(el, title, s_choice, is_last, callback) {
+  spotify_match_attempt1: function(title, s_choice, callback) {
     var me = this;
     this.get_spotify_data(title, function(data) {
       if (data) {
-        me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
+        me.on_spotify_data_retrieved(data, s_choice, callback);
       } else {
-        me.spotify_match_attempt2(el, title, s_choice, is_last, callback);
+        me.spotify_match_attempt2(title, s_choice, callback);
       }
     });
   },
 
-  on_youtube_title_retrieved: function(el, title, s_choice, is_last, callback) {
+  on_youtube_title_retrieved: function(title, s_choice, callback) {
     if (!title) {
-      if (is_last) {
-        callback();
-      }
+      callback(false);
       return;
     }
-    this.spotify_match_attempt1(el, title, s_choice, is_last, callback);
+    this.spotify_match_attempt1(title, s_choice, callback);
   },
 
   store_track_data: function(single_track_data, callback) {
@@ -389,7 +379,12 @@ var youtube2spotify = {
   add_spotify_link_for_element: function(el, vid, s_choice, is_last, callback) {
     var me = this;
     this.get_youtube_title(vid, function(title) {
-      me.on_youtube_title_retrieved(el, title, s_choice, is_last, callback);
+      me.on_youtube_title_retrieved(title, s_choice, function(data) {
+        me.add_spotify_track_link(el, data, s_choice);
+        if (is_last) {
+          callback();
+        }
+      });
     });
   },
 
