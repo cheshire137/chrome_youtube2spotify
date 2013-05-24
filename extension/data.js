@@ -17,62 +17,50 @@ var youtube2spotify_data = {
     var url = 'http://gdata.youtube.com/feeds/api/videos/' + video_id + 
               '?v=2&alt=json&key=' + this.youtube_developer_key;
     $.getJSON(url, function(data) {
-      if (!data) {
+      if (data && data.entry && data.entry.title) {
+        callback(data.entry.title.$t);
+      } else {
         callback(false);
-        return;
       }
-      callback(data.entry.title.$t);
     }).error(function() {
       callback(false);
     });
   },
 
-  // store_spotify_url_for_yt_url: function(url, s_choice, is_last, callback) {
-  //   var video_id = youtube2spotify_util.get_youtube_video_id(url);
-  //   if (!video_id) {
-  //     if (is_last) {
-  //       callback();
-  //     }
-  //     return;
-  //   }
-  //   var me = this;
-  //   this.get_youtube_title(video_id, function(title) {
-  //     if (title) {
-  //       me.on_youtube_title_retrieved(title, s_choice, callback);
-  //     } else {
-  //       callback();
-  //     }
-  //   });
-  // },
+  got_spotify_tracks: function(data, callback) {
+    var track = data.tracks[0];
+    var track_name = track.name;
+    var artists = [];
+    for (var i=0; i<track.artists.length; i++) {
+      var artist = track.artists[i];
+      artists.push({
+        name: artist.name,
+        app_url: artist.href,
+        web_url: youtube2spotify_util.get_spotify_artist_web_url(
+          artist.href
+        )
+      });
+    }
+    var web_url = youtube2spotify_util.get_spotify_track_web_url(
+      track.href
+    );
+    var track_id = youtube2spotify_util.get_spotify_track_id(track.href);
+    var track_data = {app_url: track.href, name: track_name, 
+                      artists: artists, web_url: web_url, id: track_id};
+    callback(track_data);
+  },
 
   get_spotify_data: function(title, callback) {
     var query_url = youtube2spotify_util.get_spotify_track_search_url(title);
     var me = this;
     $.getJSON(query_url, function(data) {
-      if (data && data.info.num_results > 0) {
-        var track = data.tracks[0];
-        var track_name = track.name;
-        var artists = [];
-        for (var i=0; i<track.artists.length; i++) {
-          var artist = track.artists[i];
-          artists.push({
-            name: artist.name,
-            app_url: artist.href,
-            web_url: youtube2spotify_util.get_spotify_artist_web_url(
-              artist.href
-            )
-          });
-        }
-        var web_url = youtube2spotify_util.get_spotify_track_web_url(
-          track.href
-        );
-        var track_id = youtube2spotify_util.get_spotify_track_id(track.href);
-        var track_data = {app_url: track.href, name: track_name, 
-                          artists: artists, web_url: web_url, id: track_id};
-        callback(track_data);
+      if (data && data.info && data.info.num_results > 0) {
+        me.got_spotify_tracks(data, callback);
       } else {
         callback(false);
       }
+    }).error(function() {
+      callback(false);
     });
   },
 
