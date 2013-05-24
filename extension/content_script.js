@@ -226,6 +226,43 @@ var youtube2spotify = {
     });
   },
 
+  spotify_match_attempt3: function(el, title, s_choice, is_last, callback) {
+    var words = title.split(' ');
+    var num_words = words.length;
+    if (num_words < 1) {
+      if (is_last) {
+        callback();
+      }
+      return;
+    }
+    var correct_words = [];
+    var me = this;
+    var on_spellchecked = function() {
+      var corrected_title = correct_words.join(' ');
+      me.get_spotify_data(corrected_title, function(attempt3) {
+        if (attempt3) {
+          me.on_spotify_data_retrieved(el, attempt3, s_choice, 
+                                       is_last, callback);
+        } else if (is_last) {
+          callback();
+        }
+      });
+    };
+    var spellcheck = function(index) {
+      chrome.runtime.sendMessage({word: words[index], index: index, 
+                                  action: 'spellcheck'}, word_handler);
+    };
+    var word_handler = function(response) {
+      correct_words.push(response.suggestion);
+      if (response.index >= num_words) {
+        on_spellchecked();
+        return;
+      }
+      spellcheck(response.index);
+    };
+    spellcheck(0);
+  },
+
   on_youtube_title_retrieved: function(el, title, s_choice, is_last, callback) {
     if (!title) {
       if (is_last) {
@@ -244,37 +281,8 @@ var youtube2spotify = {
             me.on_spotify_data_retrieved(el, attempt2, s_choice, is_last, 
                                          callback);
           } else {
-            var words = cleaned_title.split(' ');
-            var num_words = words.length;
-            if (num_words > 0) {
-              var correct_words = [];
-              var word_handler = function(response) {
-                if (response.index < num_words) {
-                  correct_words.push(response.suggestion);
-                  chrome.runtime.sendMessage({
-                    word: words[response.index], index: response.index,
-                    action: 'spellcheck'
-                  }, word_handler);
-                } else {
-                  correct_words.push(response.suggestion);
-                  var corrected_title = correct_words.join(' ');
-                  console.log(corrected_title);
-                  me.get_spotify_data(corrected_title, function(attempt3) {
-                    if (attempt3) {
-                      me.on_spotify_data_retrieved(el, attempt3, s_choice, 
-                                                   is_last, callback);
-                    } else if (is_last) {
-                      callback();
-                    }
-                  });
-                }
-              };
-              chrome.runtime.sendMessage({word: words[0], index: 0, 
-                                          action: 'spellcheck'}, 
-                                         word_handler);
-            } else if (is_last) {
-              callback();
-            }
+            me.spotify_match_attempt3(el, cleaned_title, s_choice, is_last, 
+                                      callback);
           }
         });
       }
