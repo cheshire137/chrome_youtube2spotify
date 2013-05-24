@@ -70,7 +70,7 @@ var youtube2spotify_popup = {
             $('#track-list li').fadeOut(function() {
               $(this).remove();
             });
-            $('h2').fadeOut();
+            $('#playlist-links').fadeOut();
             me.display_track_count(0);
           }
         );
