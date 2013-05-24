@@ -371,11 +371,6 @@ var youtube2spotify = {
     spotify_link.insertAfter(el);
   },
 
-  on_spotify_tracks_identified: function(spotify_choice, callback) {
-    this.add_spotify_trackset_link_and_player(spotify_choice);
-    callback();
-  },
-
   store_spotify_track_for_yt_video: function(vid, s_choice, callback) {
     var me = this;
     this.get_youtube_title(vid, function(title) {
@@ -411,12 +406,16 @@ var youtube2spotify = {
       callback();
       return;
     }
+    var on_last_track_stored = function() {
+      me.add_spotify_trackset_link_and_player(spotify_choice);
+      callback();
+    };
     var youtube_link_handler = function(i) {
       me.add_spotify_link_for_yt_link(
         $(this), spotify_choice,
         function() {
           if (i === num_youtube_links - 1) {
-            me.on_spotify_tracks_identified(spotify_choice, callback);
+            on_last_track_stored();
           }
         }
       );
