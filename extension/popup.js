@@ -85,8 +85,8 @@ var youtube2spotify_popup = {
     $('a[data-subreddit-path]').click(function() {
       var link = $(this);
       var subreddit_path = link.attr('data-subreddit-path');
-      me.send_request_to_content_script(
-        {action: 'query_reddit_api', subreddit_path: subreddit_path}, 
+      youtube2spotify_data.add_spotify_links_from_reddit_api(
+        subreddit_path,
         function(spotify_choice) {
           me.update_track_list(spotify_choice);
         }

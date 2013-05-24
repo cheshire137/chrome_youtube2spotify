@@ -51,7 +51,7 @@ var youtube2spotify_util = {
     return url.split('.com/v/')[1];
   },
 
-  get_subreddit: function(url) {
+  get_subreddit_from_url: function(url) {
     // e.g., http://www.reddit.com/r/electronicmusic => electronicmusic
     var subreddit_etc = url.split('/r/')[1];
     if (subreddit_etc) {
@@ -88,6 +88,15 @@ var youtube2spotify_util = {
            joined_ids;
   },
 
+  get_spotify_trackset_url: function(name, track_ids, spotify_choice) {
+    var joined_ids = track_ids.join(',');
+    if (spotify_choice === 'desktop_application') {
+      return 'spotify:trackset:' + name + ':' + joined_ids;
+    }
+    return 'https://play.spotify.com/trackset/' + encodeURIComponent(name) + 
+           '/' + joined_ids;
+  },
+
   remove_str_groups: function(str, open_str, close_str) {
     var open_paren_index = str.indexOf(open_str);
     while (open_paren_index > -1) {
@@ -99,5 +108,54 @@ var youtube2spotify_util = {
       }
     }
     return str;
+  },
+
+  string_starts_with: function(str, prefixes) {
+    if (!str) {
+      return false;
+    }
+    for (var i=0; i<prefixes.length; i++) {
+      var prefix = prefixes[i];
+      if (str.substring(0, prefix.length) === prefix) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  get_reddit_youtube_urls: function(content) {
+    var youtube_url_prefixes = this.get_youtube_urls();
+    var reddit_yt_urls = [];
+    for (var i=0; i<content.length; i++) {
+      var item = content[i];
+      var data = item.data;
+      if (item.kind === 't3' && data) {
+        var post_url = data.url;
+        if (this.string_starts_with(post_url, youtube_url_prefixes)) {
+          reddit_yt_urls.push(post_url);
+        }
+      }
+    }
+    console.log(reddit_yt_urls);
+    return reddit_yt_urls;
+  },
+
+  clean_youtube_title: function(title) {
+    var colon_index = title.indexOf(':');
+    if (colon_index > -1) {
+      var before_colon = title.substring(0, colon_index)
+      var after_colon = title.substring(colon_index + 1);
+      if (before_colon.length < after_colon.length) {
+        title = after_colon;
+      } else {
+        title = before_colon;
+      }
+    }
+    title.replace("'s ", ' ');
+    title = this.remove_str_groups(title, '(', ')');
+    title = this.remove_str_groups(title, '[', ']');
+    title = title.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, ' ');
+    title = $.trim(title.replace(/\s+/, ' '));
+    return title;
   }
 };
