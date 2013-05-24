@@ -31,6 +31,26 @@ _gaq.push(['_trackPageview']);
 var youtube2spotify_popup = {
   max_display_artists: 3,
 
+  setup_page_nav: function() {
+    $('a.page-nav').click(function() {
+      var link = $(this);
+      var new_page = $(link.attr('href'));
+      var current_page = $('.page.active');
+      var new_page_index = parseInt(new_page.attr('data-index'), 10);
+      var current_page_index = parseInt(current_page.attr('data-index'), 10);
+      if (current_page_index < new_page_index) {
+        current_page.animate({left: '-100%'});
+        new_page.animate({left: 0});
+      } else {
+        current_page.animate({left: '100%'});
+        new_page.animate({left: 0});
+      }
+      current_page.removeClass('active');
+      new_page.addClass('active');
+      return false;
+    });
+  },
+
   setup_options_link: function() {
     $('a[href="#options"]').click(function() {
       chrome.tabs.create({url: chrome.extension.getURL("options.html")});
@@ -205,6 +225,7 @@ var youtube2spotify_popup = {
   },
 
   on_popup_opened: function() {
+    this.setup_page_nav();
     this.setup_options_link();
     this.setup_clear_tracks_link();
     var me = this;

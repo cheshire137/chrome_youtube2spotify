@@ -15,21 +15,40 @@
         Tracks
       </h1>
     </header>
-    <h2 class="hidden">
-      Open playlist:
-      <a href="#" class="web-trackset-link" title="Open tracks in Spotify web player">web player</a>
-      <span class="separator">&middot;</span>
-      <a href="#" class="app-trackset-link" title="Open tracks in Spotify desktop application">desktop app</a>
-    </h2>
-    <section>
-      <ul></ul>
-    </section>
-    <footer>
-      <small>
-        <a href="#options" title="Change extension settings">Options</a>
-        <span class="separator">&middot;</span>
-        <a href="#clear-tracks" title="Reset playlist, start over">Clear Tracks</a>
-      </small>
-    </footer>
+    <div class="container">
+      <div class="page active" id="page1" data-index="1">
+        <h2>
+          <a href="#page2" class="page-nav">Add tracks from subreddit &raquo;</a>
+        </h2>
+        <h2 class="hidden">
+          Open playlist:
+          <a href="#" class="web-trackset-link" title="Open tracks in Spotify web player">web player</a>
+          <span class="separator">&middot;</span>
+          <a href="#" class="app-trackset-link" title="Open tracks in Spotify desktop application">desktop app</a>
+        </h2>
+        <section>
+          <ul></ul>
+        </section>
+        <footer>
+          <small>
+            <a href="#options" title="Change extension settings">Options</a>
+            <span class="separator">&middot;</span>
+            <a href="#clear-tracks" title="Reset playlist, start over">Clear Tracks</a>
+          </small>
+        </footer>
+      </div>
+      <div class="page" id="page2" data-index="2">
+        <h2>
+          <a href="#page1" class="page-nav">&laquo; View playlist so far</a>
+        </h2>
+        <footer>
+          <small>
+            <a href="#options" title="Change extension settings">Options</a>
+            <span class="separator">&middot;</span>
+            <a href="#clear-tracks" title="Reset playlist, start over">Clear Tracks</a>
+          </small>
+        </footer>
+      </div>
+    </div>
   </body>
 </html>

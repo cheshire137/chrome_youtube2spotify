@@ -165,6 +165,10 @@ body.popup p.artists a:hover, body.popup p.artists a:focus {
 .clearfix {
   display: inline-block;
 }
+.container {
+  width: 100%;
+  position: relative;
+}
 fieldset {
   border: none;
   padding: 0;
@@ -225,6 +229,13 @@ label + label {
 }
 .logo {
   margin-right: 20px;
+}
+.page {
+  position: absolute;
+  width: 100%;
+}
+#page2 {
+  left: 100%;
 }
 p.artists {
   margin: 0;
