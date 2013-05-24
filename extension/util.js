@@ -108,19 +108,6 @@ var youtube2spotify_util = {
            '/' + joined_ids;
   },
 
-  remove_str_groups: function(str, open_str, close_str) {
-    var open_paren_index = str.indexOf(open_str);
-    while (open_paren_index > -1) {
-      var closed_paren_index = str.indexOf(close_str, open_paren_index);
-      if (closed_paren_index > -1) {
-        str = str.substring(0, open_paren_index) + ' ' + 
-              str.substring(closed_paren_index + 1);
-        open_paren_index = str.indexOf(open_str);
-      }
-    }
-    return str;
-  },
-
   string_starts_with: function(str, prefixes) {
     if (!str) {
       return false;
@@ -153,11 +140,8 @@ var youtube2spotify_util = {
     return reddit_yt_urls;
   },
 
-  clean_youtube_title: function(title) {
-    title.replace("'s ", ' ');
-    title = this.remove_str_groups(title, '[', ']');
-    title = title.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, ' ');
-    title = $.trim(title.replace(/\s+/g, ' '));
-    return title;
+  strip_punctuation: function(str) {
+    str = str.replace(/[\[\]\.,-\/#!$%"\^&\*;:{}=\-_`~()']/g, ' ');
+    return $.trim(str.replace(/\s+/g, ' '));
   }
 };

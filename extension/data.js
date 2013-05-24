@@ -82,13 +82,14 @@ var youtube2spotify_data = {
       return original_words;
     }
     var chosen_words = [];
+    var tolerance = 2;
     var misspellings = 0;
     for (var i=0; i<original_words.length; i++) {
       var original = original_words[i];
       var corrected = corrected_words[i];
       if (original === corrected) {
         chosen_words.push(original);
-      } else if (misspellings < 1) {
+      } else if (misspellings < tolerance) {
         chosen_words.push(corrected);
         misspellings++;
       } else {
@@ -100,7 +101,7 @@ var youtube2spotify_data = {
     return chosen_words;
   },
 
-  spotify_match_attempt3: function(title, s_choice, callback) {
+  spotify_match_attempt2: function(title, s_choice, callback) {
     var words = title.split(' ');
     var num_words = words.length;
     if (num_words < 1) {
@@ -135,20 +136,9 @@ var youtube2spotify_data = {
     spellcheck(0);
   },
 
-  spotify_match_attempt2: function(title, s_choice, callback) {
-    var cleaned_title = youtube2spotify_util.clean_youtube_title(title);
-    var me = this;
-    this.get_spotify_data(cleaned_title, function(data) {
-      if (data) {
-        me.store_track_data(data, callback);
-      } else {
-        me.spotify_match_attempt3(cleaned_title, s_choice, callback);
-      }
-    });
-  },
-
   spotify_match_attempt1: function(title, s_choice, callback) {
     var me = this;
+    title = youtube2spotify_util.strip_punctuation(title);
     this.get_spotify_data(title, function(data) {
       if (data) {
         me.store_track_data(data, callback);
