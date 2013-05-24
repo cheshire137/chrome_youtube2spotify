@@ -1,7 +1,19 @@
-var utility_dict = new Typo();
-var aff_data = utility_dict._readFile(chrome.extension.getURL('en_US.aff'));
-var word_data = utility_dict._readFile(chrome.extension.getURL('en_US.dic'));
-var dictionary = new Typo('en_US', aff_data, word_data);
+/*
+ * Copyright 2013 Sarah Vessels
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 var youtube2spotify_util = {
   spellcheck: function(word) {
@@ -39,13 +51,5 @@ var youtube2spotify_util = {
   get_spotify_track_search_url: function(query) {
     return 'http://ws.spotify.com/search/1/track.json?q=' + 
             encodeURIComponent(query);
-  },
-
-};
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === 'spellcheck') {
-    sendResponse({suggestion: youtube2spotify_util.spellcheck(request.word), 
-                  index: request.index + 1});
   }
-});
+};

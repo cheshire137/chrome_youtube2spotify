@@ -14,11 +14,11 @@
       "matches": ["*://*.reddit.com/*", "*://*.redd.it/*", 
                   "*://*.youtube.com/*", "*://*.youtu.be/*", "*://reddit.com/*", 
                   "*://redd.it/*", "*://youtube.com/*", "*://youtu.be/*"],
-      "js": ["jquery-2.0.0.min.js", "content_script.js"]
+      "js": ["jquery-2.0.0.min.js", "util.js", "content_script.js"]
     }
   ],
   "background": {
-    "scripts": ["jquery-2.0.0.min.js", "typo.js", "background.js"]
+    "scripts": ["jquery-2.0.0.min.js", "typo.js", "util.js", "background.js"]
   },
   "options_page": "options.html",
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",

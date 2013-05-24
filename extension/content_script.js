@@ -67,37 +67,8 @@ var youtube2spotify = {
     });
   },
 
-  get_youtube_video_id: function(url) {
-    if (url.indexOf('youtu.be') > -1) {
-      return url.split('youtu.be/')[1];
-    }
-    if (url.indexOf('v=') > -1) {
-      var video_id_etc = url.split('v=')[1];
-      var index = video_id_etc.indexOf('&');
-      if (index > -1) {
-        return video_id_etc.substring(0, index);
-      }
-      return video_id_etc;
-    }
-    return url.split('.com/v/')[1];
-  },
-
-  get_subreddit: function(url) {
-    // e.g., http://www.reddit.com/r/electronicmusic => electronicmusic
-    var subreddit_etc = url.split('/r/')[1];
-    if (subreddit_etc) {
-      return subreddit_etc.split('/')[0];
-    }
-    return subreddit_etc;
-  },
-
-  get_spotify_track_search_url: function(query) {
-    return 'http://ws.spotify.com/search/1/track.json?q=' + 
-            encodeURIComponent(query);
-  },
-
   get_spotify_data: function(title, callback) {
-    var query_url = this.get_spotify_track_search_url(title);
+    var query_url = youtube2spotify_util.get_spotify_track_search_url(title);
     var me = this;
     $.getJSON(query_url, function(data) {
       if (data && data.info.num_results > 0) {
@@ -128,7 +99,7 @@ var youtube2spotify = {
     var youtube_urls = this.get_youtube_urls();
     for (var i=0; i<youtube_urls.length; i++) {
       if (current_url.indexOf(youtube_urls[i]) > -1) {
-        return this.get_youtube_video_id(current_url);
+        return youtube2spotify_util.get_youtube_video_id(current_url);
       }
     }
     return false;
@@ -139,7 +110,7 @@ var youtube2spotify = {
     var reddit_urls = this.get_reddit_urls();
     for (var i=0; i<reddit_urls.length; i++) {
       if (current_url.indexOf(reddit_urls[i]) > -1) {
-        return this.get_subreddit(current_url);
+        return youtube2spotify_util.get_subreddit(current_url);
       }
     }
     return false;
@@ -390,7 +361,7 @@ var youtube2spotify = {
 
   add_spotify_link_for_yt_link: function(yt_link, s_choice, callback) {
     var url = yt_link.attr('href');
-    var video_id = this.get_youtube_video_id(url);
+    var video_id = youtube2spotify_util.get_youtube_video_id(url);
     if (!video_id) {
       callback();
       return;
@@ -484,7 +455,7 @@ var youtube2spotify = {
   },
 
   store_spotify_url_for_yt_url: function(url, s_choice, is_last, callback) {
-    var video_id = this.get_youtube_video_id(url);
+    var video_id = youtube2spotify_util.get_youtube_video_id(url);
     if (!video_id) {
       if (is_last) {
         callback();
