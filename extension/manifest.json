@@ -6,7 +6,7 @@
   "permissions": [
     "tabs", "storage", "*://*.reddit.com/*", "*://*.redd.it/*", 
     "*://*.youtube.com/*", "*://*.youtu.be/*", "*://reddit.com/*", 
-    "*://redd.it/*", "*://youtube.com/*", "*://youtu.be/*"
+    "*://redd.it/*", "*://youtube.com/*", "*://youtu.be/*", "background"
   ],
   "content_scripts": [
     {

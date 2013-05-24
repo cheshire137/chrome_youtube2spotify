@@ -185,6 +185,20 @@ var youtube2spotify = {
     return app_url.split('spotify:track:')[1];
   },
 
+  get_spotify_embed_trackset_url: function(playlist_name, track_ids) {
+    var joined_ids = track_ids.join(',');
+    return 'https://embed.spotify.com/?uri=spotify:trackset:' + name + ':' + 
+           joined_ids;
+  },
+
+  get_spotify_choice: function(callback) {
+    chrome.storage.sync.get('youtube2spotify_options', function(opts) {
+      opts = opts.youtube2spotify_options || {};
+      var spotify_choice = opts.spotify || 'web_player';
+      callback(spotify_choice);
+    });
+  },
+
   remove_str_groups: function(str, open_str, close_str) {
     var open_paren_index = str.indexOf(open_str);
     while (open_paren_index > -1) {
@@ -218,7 +232,9 @@ var youtube2spotify = {
   },
 
   on_spotify_data_retrieved: function(el, data, s_choice, is_last, callback) {
-    this.add_spotify_track_link(el, data, s_choice);
+    if (el) {
+      this.add_spotify_track_link(el, data, s_choice);
+    }
     this.store_track_data(data, function() {
       if (is_last) {
         callback();
@@ -306,12 +322,6 @@ var youtube2spotify = {
         callback();
       });
     });
-  },
-
-  get_spotify_embed_trackset_url: function(playlist_name, track_ids) {
-    var joined_ids = track_ids.join(',');
-    return 'https://embed.spotify.com/?uri=spotify:trackset:' + name + ':' + 
-           joined_ids;
   },
 
   add_spotify_trackset_player: function(playlist_name, tracks, header) {
@@ -430,11 +440,9 @@ var youtube2spotify = {
                                       callback);
   },
 
-  add_spotify_links: function(callback) {
+  add_spotify_links_from_page: function(callback) {
     var me = this;
-    chrome.storage.sync.get('youtube2spotify_options', function(opts) {
-      opts = opts.youtube2spotify_options || {};
-      var spotify_choice = opts.spotify || 'web_player';
+    this.get_spotify_choice(function(spotify_choice) {
       if (me.get_current_youtube_video_id()) {
         me.add_spotify_links_on_youtube(spotify_choice, function() {
           callback(spotify_choice);
@@ -445,16 +453,105 @@ var youtube2spotify = {
         });
       }
     });
+  },
+
+  string_starts_with: function(str, prefixes) {
+    if (!str) {
+      return false;
+    }
+    for (var i=0; i<prefixes.length; i++) {
+      var prefix = prefixes[i];
+      if (str.substring(0, prefix.length) === prefix) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  get_reddit_youtube_urls: function(content) {
+    var youtube_url_prefixes = this.get_youtube_urls();
+    var reddit_yt_urls = [];
+    for (var i=0; i<content.length; i++) {
+      var item = content[i];
+      var data = item.data;
+      if (item.kind === 't3' && data) {
+        var post_url = data.url;
+        if (this.string_starts_with(post_url, youtube_url_prefixes)) {
+          reddit_yt_urls.push(post_url);
+        }
+      }
+    }
+    console.log(reddit_yt_urls);
+    return reddit_yt_urls;
+  },
+
+  store_spotify_url_for_yt_url: function(url, s_choice, is_last, callback) {
+    var video_id = this.get_youtube_video_id(url);
+    if (!video_id) {
+      if (is_last) {
+        callback();
+      }
+      return;
+    }
+    console.log(url);
+    this.get_youtube_title(video_id, function(title) {
+      console.log(title);
+      me.on_youtube_title_retrieved(false, title, s_choice, is_last, callback);
+    });
+  },
+
+  get_reddit_api_data: function(subreddit_path, spotify_choice, callback) {
+    var url = 'http://www.reddit.com' + subreddit_path + '/new.json';
+    var me = this;
+    $.getJSON(url, function(data) {
+      if (!data) {
+        callback([]);
+        return;
+      }
+      callback(data.children);
+    }).error(function() {
+      callback([]);
+    });
+  },
+
+  store_spotify_tracks_from_reddit_data: function(data, s_choice, callback) {
+    var youtube_urls = me.get_reddit_youtube_urls(data);
+    var num_youtube_links = youtube_urls.length;
+    for (var i=0; i<youtube_urls.length; i++) {
+      me.store_spotify_url_for_yt_url(
+        youtube_urls[i], s_choice, i === num_youtube_links - 1,
+        function() {
+          callback(s_choice);
+        }
+      );
+    }
+  },
+
+  add_spotify_links_from_reddit_api: function(subreddit_path, callback) {
+    var me = this;
+    this.get_spotify_choice(function(spotify_choice) {
+      me.get_reddit_api_data(subreddit_path, spotify_choice, function(data) {
+        me.store_spotify_tracks_from_reddit_data(data, spotify_choice, 
+                                                 callback);
+      });
+    });
   }
 };
 
-youtube2spotify.add_spotify_links(function(spotify_choice) {
+youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.action === 'check_for_youtube_links') {
-    youtube2spotify.add_spotify_links(function(spotify_choice) {
+    youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {
       sendResponse(spotify_choice);
     });
+  } else if (request.action === 'query_reddit_api') {
+    youtube2spotify.add_spotify_links_from_reddit_api(
+      request.subreddit_path,
+      function(s_choice) {
+        sendResponse(s_choice);
+      }
+    );
   }
 });
