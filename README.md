@@ -72,3 +72,14 @@ a playlist later on my computer.
 
 * Allow pulling a playlist from the Reddit API, instead of just links on the current Reddit page.
 * Incorporate other sites, like Soundcloud or Vimeo, and try to find their Spotify tracks.
+
+## Credits
+
+Thanks to [Typo.js](https://github.com/cfinke/Typo.js), 
+[jQuery](http://jquery.com/), the 
+[Spotify API](https://developer.spotify.com/technologies/web-api/), and the 
+[YouTube API](https://developers.google.com/youtube/).
+
+## License
+
+The source code is released under the GNU General Public License version 3.
