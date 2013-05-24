@@ -120,9 +120,9 @@ var youtube2spotify = {
     }
     spotify_link.css('vertical-align', 'middle');
     spotify_link.css('display', 'inline-block');
-    var title = 'Open track in Spotify';
+    var title = youtube2spotify_util.get_spotify_track_link_title(data);
     spotify_link.attr('title', title);
-    var icon = this.get_spotify_image(title);
+    var icon = this.get_spotify_image('Open track in Spotify');
     spotify_link.append(icon);
     spotify_link.insertAfter(el);
   },

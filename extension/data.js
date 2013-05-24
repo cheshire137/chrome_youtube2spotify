@@ -76,6 +76,30 @@ var youtube2spotify_data = {
     });
   },
 
+  choose_words: function(original_words, corrected_words) {
+    if (original_words.length !== corrected_words.length) {
+      console.error('Did not get a corrected word for each word');
+      return original_words;
+    }
+    var chosen_words = [];
+    var misspellings = 0;
+    for (var i=0; i<original_words.length; i++) {
+      var original = original_words[i];
+      var corrected = corrected_words[i];
+      if (original === corrected) {
+        chosen_words.push(original);
+      } else if (misspellings < 1) {
+        chosen_words.push(corrected);
+        misspellings++;
+      } else {
+        // Don't want to accept too many typos in case we completely change the
+        // original YouTube title, thus getting a bad Spotify match.
+        chosen_words.push(original);
+      }
+    }
+    return chosen_words;
+  },
+
   spotify_match_attempt3: function(title, s_choice, callback) {
     var words = title.split(' ');
     var num_words = words.length;
@@ -86,7 +110,8 @@ var youtube2spotify_data = {
     var correct_words = [];
     var me = this;
     var on_spellchecked = function() {
-      var corrected_title = correct_words.join(' ');
+      var chosen_words = me.choose_words(words, correct_words);
+      var corrected_title = chosen_words.join(' ');
       me.get_spotify_data(corrected_title, function(data) {
         if (data) {
           me.store_track_data(data, callback);

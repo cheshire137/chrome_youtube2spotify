@@ -74,6 +74,17 @@ var youtube2spotify_util = {
            this.get_spotify_track_id(app_url);
   },
 
+  get_spotify_track_link_title: function(data) {
+    var title = data.name;
+    var artist_names = [];
+    for (var i=0; i<data.artists.length; i++) {
+      artist_names.push(data.artists[i].name);
+    }
+    title += ' by ' + artist_names.join(', ');
+    title = title.replace(/"/g, "'");
+    return title;
+  },
+
   get_spotify_artist_web_url: function(app_url) {
     if (!app_url) {
       return app_url;
@@ -143,21 +154,10 @@ var youtube2spotify_util = {
   },
 
   clean_youtube_title: function(title) {
-    var colon_index = title.indexOf(':');
-    if (colon_index > -1) {
-      var before_colon = title.substring(0, colon_index)
-      var after_colon = title.substring(colon_index + 1);
-      if (before_colon.length < after_colon.length) {
-        title = after_colon;
-      } else {
-        title = before_colon;
-      }
-    }
     title.replace("'s ", ' ');
-    title = this.remove_str_groups(title, '(', ')');
     title = this.remove_str_groups(title, '[', ']');
     title = title.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, ' ');
-    title = $.trim(title.replace(/\s+/, ' '));
+    title = $.trim(title.replace(/\s+/g, ' '));
     return title;
   }
 };
