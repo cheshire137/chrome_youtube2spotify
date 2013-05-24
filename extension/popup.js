@@ -232,8 +232,26 @@ var youtube2spotify_popup = {
                                encodeURIComponent(name) + '/' + joined_ids});
       return false;
     });
+  },
 
-    $('h2').fadeIn();
+  setup_copy_trackset_link: function(tracks) {
+    var copy_link = $('a[href="#copy-trackset-link"]');
+    copy_link.unbind('click').click(function() {
+      var app_urls = [];
+      for (var track_id in tracks) {
+        app_urls.push(tracks[track_id].app_url);
+      }
+      $('textarea').focus(function() {
+        $(this).select().mouseup(function() { // Work around Chrome's problem
+          // Prevent further mouseup intervention
+          $(this).unbind('mouseup');
+          return false;
+        });
+      }).blur(function() {
+        $(this).slideUp();
+      }).val(app_urls.join("\n")).slideDown().focus();
+      return false;
+    });
   },
 
   display_track_count: function(track_count) {
@@ -247,7 +265,11 @@ var youtube2spotify_popup = {
       var tracks = data.tracks || {};
       var track_ids = me.get_sorted_track_ids(tracks);
       me.display_track_count(track_ids.length);
+
       me.setup_trackset_links(track_ids);
+      me.setup_copy_trackset_link(tracks);
+      $('#playlist-links').fadeIn();
+
       me.populate_track_list(track_ids, tracks, spotify_choice);
       if (callback) {
         callback();

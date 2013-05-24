@@ -2,6 +2,9 @@ Version 0.0.0.4:
 - Adding ability to pull Spotify tracks from new posts to a particular subreddit
   via the Reddit API.
 - Better track matching by using spellcheck on YouTube video titles.
+- Adding Spotify player to subreddit with playlist of that page.
+- Adding ability to copy list of Spotify tracks to paste into Spotify if the 
+  playlist is too long and Spotify won't open the URL.
 
 Version 0.0.0.3:
 - Fixing some Spotify tracks not being matched when they had an artist without a 
