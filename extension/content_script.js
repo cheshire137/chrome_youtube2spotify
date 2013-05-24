@@ -67,14 +67,6 @@ var youtube2spotify = {
              '" width="16" height="16">');
   },
 
-  get_spotify_choice: function(callback) {
-    chrome.storage.sync.get('youtube2spotify_options', function(opts) {
-      opts = opts.youtube2spotify_options || {};
-      var spotify_choice = opts.spotify || 'web_player';
-      callback(spotify_choice);
-    });
-  },
-
   add_spotify_trackset_player: function(playlist_name, tracks, header) {
     var iframe = $('<iframe class="trackset-embed" src="" frameborder="0" ' + 
                    'allowtransparency="true" style="width: 250px; ' + 
@@ -200,7 +192,7 @@ var youtube2spotify = {
 
   add_spotify_links_from_page: function(callback) {
     var me = this;
-    this.get_spotify_choice(function(spotify_choice) {
+    youtube2spotify_data.get_spotify_choice(function(spotify_choice) {
       if (me.get_current_youtube_video_id()) {
         me.add_spotify_links_on_youtube(spotify_choice, function() {
           callback(spotify_choice);
@@ -214,8 +206,7 @@ var youtube2spotify = {
   }
 };
 
-youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {
-});
+youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {});
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.action === 'check_for_youtube_links') {

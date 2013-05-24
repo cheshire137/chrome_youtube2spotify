@@ -126,17 +126,19 @@ var youtube2spotify_util = {
   get_reddit_youtube_urls: function(content) {
     var youtube_url_prefixes = this.get_youtube_urls();
     var reddit_yt_urls = [];
+    if (!content) {
+      return reddit_yt_urls;
+    }
     for (var i=0; i<content.length; i++) {
       var item = content[i];
       var data = item.data;
       if (item.kind === 't3' && data) {
         var post_url = data.url;
         if (this.string_starts_with(post_url, youtube_url_prefixes)) {
-          reddit_yt_urls.push(post_url);
+          reddit_yt_urls.push(post_url.replace('&amp;', '&'));
         }
       }
     }
-    console.log(reddit_yt_urls);
     return reddit_yt_urls;
   },
 
