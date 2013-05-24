@@ -14,7 +14,7 @@ On YouTube, if a music video is found on Spotify, a Spotify icon will appear
 next to the video name. Clicking that icon will start playing the track in
 Spotify.
 
-Clicking the ![YouTube to Spotify Playlister icon](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/icon20.png) icon in your Chrome 
+Clicking the ![YouTube to Spotify Playlister icon](http://github.com/moneypenny/chrome_youtube2spotify/raw/master/extension/icon20.png) icon in your Chrome 
 window will open a popup showing all the Spotify tracks found so far. You can
 keep adding to this list by browsing other Reddit pages or YouTube videos.
 When you're ready, click the 'web player' or 'desktop app' links to open the
