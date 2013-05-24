@@ -239,12 +239,42 @@ var youtube2spotify = {
         me.on_spotify_data_retrieved(el, data, s_choice, is_last, callback);
       } else {
         var cleaned_title = me.clean_youtube_title(title);
-        me.get_spotify_data(cleaned_title, function(data_attempt2) {
-          if (data_attempt2) {
-            me.on_spotify_data_retrieved(el, data_attempt2, s_choice, is_last, 
+        me.get_spotify_data(cleaned_title, function(attempt2) {
+          if (attempt2) {
+            me.on_spotify_data_retrieved(el, attempt2, s_choice, is_last, 
                                          callback);
-          } else if (is_last) {
-            callback();
+          } else {
+            var words = cleaned_title.split(' ');
+            var num_words = words.length;
+            if (num_words > 0) {
+              var correct_words = [];
+              var word_handler = function(response) {
+                if (response.index < num_words) {
+                  correct_words.push(response.suggestion);
+                  chrome.runtime.sendMessage({
+                    word: words[response.index], index: response.index,
+                    action: 'spellcheck'
+                  }, word_handler);
+                } else {
+                  correct_words.push(response.suggestion);
+                  var corrected_title = correct_words.join(' ');
+                  console.log(corrected_title);
+                  me.get_spotify_data(corrected_title, function(attempt3) {
+                    if (attempt3) {
+                      me.on_spotify_data_retrieved(el, attempt3, s_choice, 
+                                                   is_last, callback);
+                    } else if (is_last) {
+                      callback();
+                    }
+                  });
+                }
+              };
+              chrome.runtime.sendMessage({word: words[0], index: 0, 
+                                          action: 'spellcheck'}, 
+                                         word_handler);
+            } else if (is_last) {
+              callback();
+            }
           }
         });
       }
