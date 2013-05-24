@@ -67,7 +67,7 @@ var youtube2spotify_popup = {
         chrome.storage.local.set(
           {'youtube2spotify': data},
           function() {
-            $('ul li').fadeOut(function() {
+            $('#track-list li').fadeOut(function() {
               $(this).remove();
             });
             $('h2').fadeOut();
@@ -75,6 +75,14 @@ var youtube2spotify_popup = {
           }
         );
       });
+      return false;
+    });
+  },
+
+  setup_subreddit_links: function() {
+    $('a[href^="/r/"]').click(function() {
+      var link = this;
+      var subreddit_path = link.attr('href');
       return false;
     });
   },
@@ -162,7 +170,7 @@ var youtube2spotify_popup = {
   },
 
   populate_track_list: function(track_ids, tracks, spotify_choice) {
-    var list = $('ul');
+    var list = $('#track-list');
     list.empty();
     for (var i=0; i<track_ids.length; i++) {
       var track_id = track_ids[i];
@@ -228,6 +236,7 @@ var youtube2spotify_popup = {
     this.setup_page_nav();
     this.setup_options_link();
     this.setup_clear_tracks_link();
+    this.setup_subreddit_links();
     var me = this;
     chrome.storage.sync.get('youtube2spotify_options', function(opts) {
       opts = opts.youtube2spotify_options || {};
@@ -248,10 +257,4 @@ $(function() {
       }
     );
   });
-});
-
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  if (request.action == 'spotify_tracks_updated') {
-    youtube2spotify_popup.update_track_list(request.spotify_choice);
-  }
 });

@@ -212,6 +212,10 @@ h2 {
 h2 a:hover, h2 a:focus {
   text-decoration: underline;
 }
+h3 {
+  font-size: 12px;
+  margin: 0 10px 10px 10px;
+}
 .header {
   margin-bottom: 40px;
 }
@@ -262,4 +266,10 @@ span.separator {
 }
 #track-count {
   display: inline;
+}
+ul.subreddits li {
+  margin: 0 10px;
+}
+ul.subreddits li a {
+  display: block;
 }
