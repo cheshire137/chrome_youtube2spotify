@@ -393,23 +393,17 @@ var youtube2spotify = {
     });
   },
 
-  add_spotify_link_for_yt_link: function(yt_link, s_choice, is_last, callback) {
+  add_spotify_link_for_yt_link: function(yt_link, s_choice, callback) {
     var url = yt_link.attr('href');
     var video_id = this.get_youtube_video_id(url);
     if (!video_id) {
-      if (is_last) {
-        callback();
-      }
+      callback();
       return;
     }
-    this.add_spotify_link_for_element(yt_link, video_id, s_choice, function() {
-      if (is_last) {
-        callback();
-      }
-    });
+    this.add_spotify_link_for_element(yt_link, video_id, s_choice, callback);
   },
 
-  add_spotify_links_for_youtube_links: function(spotify_choice, callback) {
+  add_spotify_links_on_reddit: function(spotify_choice, callback) {
     var youtube_links = this.get_youtube_links();
     var me = this;
     var num_youtube_links = youtube_links.length;
@@ -417,14 +411,17 @@ var youtube2spotify = {
       callback();
       return;
     }
-    youtube_links.each(function(i) {
+    var youtube_link_handler = function(i) {
       me.add_spotify_link_for_yt_link(
-        $(this), spotify_choice, i === num_youtube_links - 1,
+        $(this), spotify_choice,
         function() {
-          me.on_spotify_tracks_identified(spotify_choice, callback);
+          if (i === num_youtube_links - 1) {
+            me.on_spotify_tracks_identified(spotify_choice, callback);
+          }
         }
       );
-    });
+    };
+    youtube_links.each(youtube_link_handler);
   },
 
   add_spotify_links_on_youtube: function(spotify_choice, callback) {
@@ -450,7 +447,7 @@ var youtube2spotify = {
           callback(spotify_choice);
         });
       } else {
-        me.add_spotify_links_for_youtube_links(spotify_choice, function() {
+        me.add_spotify_links_on_reddit(spotify_choice, function() {
           callback(spotify_choice);
         });
       }
