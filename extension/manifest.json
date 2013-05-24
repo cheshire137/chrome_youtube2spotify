@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "YouTube to Spotify Playlister",
   "description": "This extension allows Spotify playlist creation from YouTube links on Reddit.",
-  "version": "0.0.0.3",
+  "version": "0.0.0.4",
   "permissions": [
     "tabs", "storage", "*://*.reddit.com/*", "*://*.redd.it/*", 
     "*://*.youtube.com/*", "*://*.youtu.be/*", "*://reddit.com/*", 

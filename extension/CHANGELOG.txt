@@ -1,0 +1,14 @@
+Version 0.0.0.4:
+- Adding ability to pull Spotify tracks from new posts to a particular subreddit
+  via the Reddit API.
+- Better track matching by using spellcheck on YouTube video titles.
+
+Version 0.0.0.3:
+- Fixing some Spotify tracks not being matched when they had an artist without a 
+  link in Spotify, e.g., 'Various Artists'.
+
+Version 0.0.0.2:
+- Fixing broken artist links when using the desktop application.
+
+Version 0.0.0.1:
+- Initial functionality.

@@ -70,7 +70,7 @@ a playlist later on my computer.
 
 ## Feature To-do List
 
-* Allow pulling a playlist from the Reddit API, instead of just links on the current Reddit page.
+* Allow user to enter subreddit and pull tracks from the API for that subreddit.
 * Incorporate other sites, like Soundcloud or Vimeo, and try to find their Spotify tracks.
 
 ## Credits
