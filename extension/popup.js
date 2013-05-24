@@ -39,11 +39,15 @@ var youtube2spotify_popup = {
       var new_page_index = parseInt(new_page.attr('data-index'), 10);
       var current_page_index = parseInt(current_page.attr('data-index'), 10);
       if (current_page_index < new_page_index) {
-        current_page.animate({left: '-100%'});
-        new_page.animate({left: 0});
+        current_page.animate({left: '-100%'}, function() {
+          current_page.hide();
+        });
+        new_page.show().animate({left: 0});
       } else {
-        current_page.animate({left: '100%'});
-        new_page.animate({left: 0});
+        current_page.animate({left: '100%'}, function() {
+          current_page.hide();
+        });
+        new_page.show().animate({left: 0});
       }
       current_page.removeClass('active');
       new_page.addClass('active');
@@ -81,14 +85,22 @@ var youtube2spotify_popup = {
 
   setup_subreddit_links: function() {
     var me = this;
-    var bg_page = chrome.extension.getBackgroundPage();
     $('a[data-subreddit-path]').click(function() {
       var link = $(this);
       var subreddit_path = link.attr('data-subreddit-path');
+      var page = link.closest('.page');
+      var spinner = $('.spinner', page);
+      var page_height = page.height();
+      spinner.css('margin-top', 
+                  ((page_height/2) - (spinner.height() / 2)) + 'px');
+      var overlay = $('.overlay', page);
+      overlay.css('height', page_height + 'px').fadeIn();
       youtube2spotify_data.add_spotify_links_from_reddit_api(
         subreddit_path,
         function(spotify_choice) {
-          me.update_track_list(spotify_choice);
+          me.update_track_list(spotify_choice, function() {
+            overlay.fadeOut();
+          });
         }
       );
       return false;
@@ -228,7 +240,7 @@ var youtube2spotify_popup = {
     $('#track-count').text(track_count);
   },
 
-  update_track_list: function(spotify_choice) {
+  update_track_list: function(spotify_choice, callback) {
     var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
@@ -237,6 +249,9 @@ var youtube2spotify_popup = {
       me.display_track_count(track_ids.length);
       me.setup_trackset_links(track_ids);
       me.populate_track_list(track_ids, tracks, spotify_choice);
+      if (callback) {
+        callback();
+      }
     });
   },
 
