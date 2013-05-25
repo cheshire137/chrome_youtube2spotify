@@ -17,8 +17,9 @@
 
 function save_options() {
   var spotify = $('input[name="spotify"]:checked').val();
+  var lookup_behavior = $('input[name="lookup_behavior"]:checked').val();
   var status_area = $('#status-message');
-  var options = {spotify: spotify};
+  var options = {spotify: spotify, lookup_behavior: lookup_behavior};
   chrome.storage.sync.set({'youtube2spotify_options': options}, function() {
     status_area.text('Okay, got it!').fadeIn(function() {
       setTimeout(function() {
@@ -37,9 +38,17 @@ function restore_options() {
     } else {
       $('#web_player').attr('checked', 'checked');
     }
+    if (opts.lookup_behavior) {
+      var selector = 'input[name="lookup_behavior"][value="' + 
+                     opts.lookup_behavior + '"]';
+      $(selector).attr('checked', 'checked');
+    } else {
+      $('#immediate_lookup').attr('checked', 'checked');
+    }
   });
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
 
 $('input[name="spotify"]').on('change', save_options);
+$('input[name="lookup_behavior"]').on('change', save_options);

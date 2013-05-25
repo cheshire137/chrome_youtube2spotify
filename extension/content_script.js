@@ -206,7 +206,11 @@ var youtube2spotify = {
   }
 };
 
-youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {});
+youtube2spotify_data.get_lookup_behavior(function(lookup_behavior) {
+  if (lookup_behavior === 'immediate_lookup') {
+    youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {});
+  }
+});
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.action === 'check_for_youtube_links') {

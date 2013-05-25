@@ -181,11 +181,26 @@ var youtube2spotify_data = {
     });
   },
 
-  get_spotify_choice: function(callback) {
+  get_options: function(callback) {
     chrome.storage.sync.get('youtube2spotify_options', function(opts) {
       opts = opts.youtube2spotify_options || {};
       var spotify_choice = opts.spotify || 'web_player';
-      callback(spotify_choice);
+      var lookup_behavior = opts.lookup_behavior || 'immediate_lookup';
+      opts.spotify_choice = spotify_choice;
+      opts.lookup_behavior = lookup_behavior;
+      callback(opts);
+    });
+  },
+
+  get_spotify_choice: function(callback) {
+    this.get_options(function(opts) {
+      callback(opts.spotify_choice);
+    });
+  },
+
+  get_lookup_behavior: function(callback) {
+    this.get_options(function(opts) {
+      callback(opts.lookup_behavior);
     });
   },
 
