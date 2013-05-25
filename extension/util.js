@@ -16,6 +16,9 @@
  */
 
 var youtube2spotify_util = {
+  youtube_domains: ['youtu.be', 'youtube.com'],
+  reddit_domains: ['redd.it', 'reddit.com'],
+
   get_domain_urls: function(domains) {
     var urls = [];
     for (var i=0; i<domains.length; i++) {
@@ -29,11 +32,11 @@ var youtube2spotify_util = {
   },
 
   get_youtube_urls: function() {
-    return this.get_domain_urls(['youtu.be', 'youtube.com']);
+    return this.get_domain_urls(this.youtube_domains);
   },
 
   get_reddit_urls: function() {
-    return this.get_domain_urls(['redd.it', 'reddit.com']);
+    return this.get_domain_urls(this.reddit_domains);
   },
 
   get_youtube_video_id: function(url) {

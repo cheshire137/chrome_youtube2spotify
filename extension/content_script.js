@@ -18,13 +18,10 @@
 var youtube2spotify = {
   get_youtube_links_on_page: function() {
     var urls = youtube2spotify_util.get_youtube_urls();
-    // a.title[href^="http://youtu.be"], a.title[href^="http://www.youtu.be"], 
-    // a.title[href^="https://youtu.be"], a.title[href^="https://www.youtu.be"], 
-    // a.title[href^="http://youtube.com"], 
-    // a.title[href^="http://www.youtube.com"], 
-    // a.title[href^="https://youtube.com"], 
-    // a.title[href^="https://www.youtube.com"] 
-    var selector = 'a.title[href^="' + urls.join('"], a.title[href^="') + '"]';
+    var domains = youtube2spotify_util.youtube_domains;
+    // $('a.title[href*="youtu.be"], a.title[href*="youtube.com"]')
+    var selector = 'a.title[href*="' + domains.join('"], a.title[href*="') + 
+                   '"]';
     var links = $(selector).filter(function() {
       return $(this).next('.spotify-track').length < 1;
     });
