@@ -146,5 +146,40 @@ var youtube2spotify_util = {
   strip_punctuation: function(str) {
     str = str.replace(/[\[\]\.,-\/#!$%"\^&\*;:{}=\-_`~()']/g, ' ');
     return $.trim(str.replace(/\s+/g, ' '));
+  },
+
+  get_chrome_runtime_or_extension: function() {
+    if (chrome.runtime && chrome.runtime.sendMessage) {
+      return 'runtime';
+    }
+    return 'extension';
+  },
+
+  send_message_to_active_tab: function(message, on_response) {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, message, on_response);
+    });
+  },
+
+  // See http://stackoverflow.com/a/15718294/38743
+  send_message: function(message, on_response) {
+    console.log('sending message:');
+    console.log(message);
+    var runtime_or_extension = this.get_chrome_runtime_or_extension();
+    chrome[runtime_or_extension].sendMessage(message, on_response);
+  },
+
+  // See http://stackoverflow.com/a/15718294/38743
+  receive_message: function(handler) {
+    var runtime_or_extension = this.get_chrome_runtime_or_extension();
+    chrome[runtime_or_extension].onMessage.addListener(handler);
+  },
+
+  // See http://stackoverflow.com/a/16268002/38743
+  in_background_script: function() {
+    if (chrome.tabs) {
+      return chrome.extension.getBackgroundPage() === window;
+    }
+    return false;
   }
 };

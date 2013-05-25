@@ -18,8 +18,8 @@
     }
   ],
   "background": {
-    "scripts": ["jquery-2.0.0.min.js", "typo.js", "util.js", "data.js", 
-                "background.js"],
+    "scripts": ["jquery-2.0.0.min.js", "typo.js", "spellchecker.js", "util.js", 
+                "data.js", "background.js"],
     "persistent": false
   },
   "options_page": "options.html",

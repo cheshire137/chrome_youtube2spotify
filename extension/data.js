@@ -110,16 +110,24 @@ var youtube2spotify_data = {
       });
     };
     var spellcheck = function(index) {
-      chrome.runtime.sendMessage({word: words[index], index: index, 
-                                  action: 'spellcheck'}, word_handler);
+      if (youtube2spotify_util.in_background_script()) {
+        var suggestion = youtube2spotify_spellchecker.spellcheck(words[index]);
+        word_handler({index: index + 1, suggestion: suggestion});
+      } else {
+        youtube2spotify_util.send_message(
+          {word: words[index], index: index, action: 'spellcheck'}, 
+          word_handler
+        );
+      }
     };
     var word_handler = function(response) {
       correct_words.push(response.suggestion);
       if (response.index >= num_words) {
         on_spellchecked();
-        return;
+        return true;
       }
       spellcheck(response.index);
+      return true;
     };
     spellcheck(0);
   },
@@ -204,7 +212,7 @@ var youtube2spotify_data = {
     });
   },
 
-  add_spotify_links_from_reddit_api: function(subreddit_path, callback) {
+  store_spotify_tracks_from_reddit_api: function(subreddit_path, callback) {
     var me = this;
     this.get_spotify_choice(function(s_choice) {
       me.get_reddit_api_data(subreddit_path, s_choice, function(data) {

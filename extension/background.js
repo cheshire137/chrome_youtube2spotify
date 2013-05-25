@@ -1,29 +1,17 @@
-var utility_dict = new Typo();
-var aff_data = utility_dict._readFile(chrome.extension.getURL('en_US.aff'));
-var word_data = utility_dict._readFile(chrome.extension.getURL('en_US.dic'));
-var dictionary = new Typo('en_US', aff_data, word_data);
-
-function is_numeric(str) {
-  return !isNaN(str);
-}
-
-function spellcheck(word) {
-  if (is_numeric(word) || dictionary.check(word)) { // spelled correctly
-    return word;
-  }
-  var suggestions = dictionary.suggest(word);
-  if (suggestions.length < 1) {
-    // Assume if the dictionary has no idea what this word is, then it's 
-    // probably some band name.
-    return word;
-  }
-  // misspelled word
-  return suggestions[0];
-}
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+youtube2spotify_util.receive_message(function(request, sender, sendResponse) {
   if (request.action === 'spellcheck') {
-    sendResponse({suggestion: spellcheck(request.word), 
-                  index: request.index + 1});
+    var suggestion = youtube2spotify_spellchecker.spellcheck(request.word);
+    sendResponse({suggestion: suggestion, index: request.index + 1});
+    return true;
+  } else if (request.action === 'reddit_api') {
+    console.log('got request to lookup tracks from ' + request.subreddit_path);
+    youtube2spotify_data.store_spotify_tracks_from_reddit_api(
+      request.subreddit_path,
+      function(spotify_choice) {
+        console.log('finished looking up tracks in ' + request.subreddit_path);
+        sendResponse(spotify_choice);
+      }
+    );
+    return true;
   }
 });

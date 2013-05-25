@@ -95,12 +95,13 @@ var youtube2spotify_popup = {
                   ((page_height/2) - (spinner.height() / 2)) + 'px');
       var overlay = $('.overlay', page);
       overlay.css('height', page_height + 'px').fadeIn();
-      youtube2spotify_data.add_spotify_links_from_reddit_api(
-        subreddit_path,
+      youtube2spotify_util.send_message(
+        {action: 'reddit_api', subreddit_path: subreddit_path}, 
         function(spotify_choice) {
           me.update_track_list(spotify_choice, function() {
             overlay.fadeOut();
           });
+          return true;
         }
       );
       return false;
@@ -288,18 +289,12 @@ var youtube2spotify_popup = {
       var spotify_choice = opts.spotify || 'web_player';
       me.update_track_list(spotify_choice);
     });
-  },
-
-  send_request_to_content_script: function(data, callback) {
-    chrome.tabs.getSelected(null, function(tab) {
-      chrome.tabs.sendRequest(tab.id, data, callback);
-    });
   }
 };
 
 $(function() {
   youtube2spotify_popup.on_popup_opened();
-  youtube2spotify_popup.send_request_to_content_script(
+  youtube2spotify_util.send_message_to_active_tab(
     {action: 'check_for_youtube_links'},
     function(spotify_choice) {
       youtube2spotify_popup.update_track_list(spotify_choice);
