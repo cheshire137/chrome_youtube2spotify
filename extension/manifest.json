@@ -19,7 +19,8 @@
   ],
   "background": {
     "scripts": ["jquery-2.0.0.min.js", "typo.js", "util.js", "data.js", 
-                "background.js"]
+                "background.js"],
+    "persistent": false
   },
   "options_page": "options.html",
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
