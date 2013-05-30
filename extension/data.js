@@ -1,10 +1,18 @@
 var youtube2spotify_data = {
   youtube_developer_key: 'AI39si6koxPUHowThl0aytdIBp8OXNRYu3g08TSBf8UPjuAggM3OQgjh86jyMHj694gf6Aw9lxskseVhHJCcQ-Smem_GX_7dAQ',
-  tracks_to_store: {},
+  is_writing_storage: false,
 
   store_track: function(single_track_data) {
-    var tracks_to_store = this.tracks_to_store;
     var me = this;
+    if (this.is_writing_storage) {
+      console.log('currently writing to storage, going to wait before storing track ' + single_track_data.name);
+      setTimeout(function() {
+        me.store_track(single_track_data);
+      }, Math.floor(Math.random() * 1000));
+      return;
+    }
+    this.is_writing_storage = true;
+    console.log('storing track ' + single_track_data.name);
     // TODO: worry about race condition?
     // Maybe http://stackoverflow.com/a/15163195/38743
     chrome.storage.local.get('youtube2spotify', function(data) {
@@ -13,6 +21,7 @@ var youtube2spotify_data = {
       data.tracks[single_track_data.id] = single_track_data;
       chrome.storage.local.set({'youtube2spotify': data}, function() {
         console.log('stored Spotify track ' + single_track_data.name + ' -- there are now ' + Object.keys(data.tracks).length + ' stored tracks');
+        me.is_writing_storage = false;
       });
     });
   },
