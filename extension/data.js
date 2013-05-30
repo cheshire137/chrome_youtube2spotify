@@ -2,15 +2,17 @@ var youtube2spotify_data = {
   youtube_developer_key: 'AI39si6koxPUHowThl0aytdIBp8OXNRYu3g08TSBf8UPjuAggM3OQgjh86jyMHj694gf6Aw9lxskseVhHJCcQ-Smem_GX_7dAQ',
   tracks_to_store: {},
 
-  store_track: function(single_track_data, callback) {
+  store_track: function(single_track_data) {
     var tracks_to_store = this.tracks_to_store;
     var me = this;
+    // TODO: worry about race condition?
+    // Maybe http://stackoverflow.com/a/15163195/38743
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
       data.tracks = data.tracks || {};
       data.tracks[single_track_data.id] = single_track_data;
       chrome.storage.local.set({'youtube2spotify': data}, function() {
-        callback(single_track_data);
+        console.log('stored Spotify track ' + single_track_data.name + ' -- there are now ' + Object.keys(data.tracks).length + ' stored tracks');
       });
     });
   },
@@ -60,7 +62,6 @@ var youtube2spotify_data = {
     var query_url = youtube2spotify_util.get_spotify_track_search_url(title);
     var me = this;
     this.get_json(query_url, function(data) {
-      console.log('got Spotify data for title ' + title);
       if (data && data.info && data.info.num_results > 0) {
         me.got_spotify_tracks(data, callback);
       } else {
@@ -94,11 +95,10 @@ var youtube2spotify_data = {
     return chosen_words;
   },
 
-  spotify_match_attempt2: function(title, s_choice, callback) {
+  spotify_match_attempt2: function(title, s_choice) {
     var words = title.split(' ');
     var num_words = words.length;
     if (num_words < 1) {
-      callback(false);
       return;
     }
     var correct_words = [];
@@ -108,9 +108,7 @@ var youtube2spotify_data = {
       var corrected_title = chosen_words.join(' ');
       me.get_spotify_data(corrected_title, function(data) {
         if (data) {
-          me.store_track(data, callback);
-        } else {
-          callback(false);
+          me.store_track(data);
         }
       });
     };
@@ -137,49 +135,36 @@ var youtube2spotify_data = {
     spellcheck(0);
   },
 
-  spotify_match_attempt1: function(title, s_choice, callback) {
+  spotify_match_attempt1: function(title, s_choice) {
     var me = this;
     title = youtube2spotify_util.strip_punctuation(title);
     this.get_spotify_data(title, function(data) {
       if (data) {
-        me.store_track(data, callback);
+        me.store_track(data);
       } else {
-        me.spotify_match_attempt2(title, s_choice, callback);
+        me.spotify_match_attempt2(title, s_choice);
       }
     });
   },
 
-  store_spotify_track_for_yt_video: function(vid, s_choice, callback) {
+  store_spotify_track_for_yt_video: function(vid, s_choice) {
     var me = this;
     this.get_youtube_title(vid, function(title) {
       console.log('got YouTube title for video ID ' + vid);
       if (title) {
-        me.spotify_match_attempt1(title, s_choice, callback);
-      } else {
-        callback(false);
+        me.spotify_match_attempt1(title, s_choice);
       }
     });
   },
 
-  store_spotify_tracks_from_reddit_data: function(data, s_choice, callback) {
+  store_spotify_tracks_from_reddit_data: function(data, s_choice) {
     var youtube_urls = youtube2spotify_util.get_reddit_youtube_urls(data);
     console.log('got ' + youtube_urls.length + ' YouTube URLs from Reddit data');
     var num_youtube_links = youtube_urls.length;
     var me = this;
-    var on_data_stored = function(i) {
-      console.log('stored data for YouTube URL #' + (i + 1));
-      if (i === num_youtube_links - 1) {
-        console.log('finished storing all Spotify tracks for YouTube videos');
-        callback(s_choice);
-      }
-    };
     var url_handler = function(i) {
-      console.log('handling YouTube video #' + (i+1));
       var vid = youtube2spotify_util.get_youtube_video_id(youtube_urls[i]);
-      console.log('got YouTube video ID for #' + (i+1));
-      me.store_spotify_track_for_yt_video(vid, s_choice, function(data) {
-        on_data_stored(i);
-      });
+      me.store_spotify_track_for_yt_video(vid, s_choice);
     };
     for (var i=0; i<youtube_urls.length; i++) {
       url_handler(i);
@@ -226,8 +211,9 @@ var youtube2spotify_data = {
     this.get_spotify_choice(function(s_choice) {
       me.get_reddit_api_data(subreddit_path, s_choice, function(data) {
         console.log('got Reddit API data for ' + subreddit_path);
-        me.store_spotify_tracks_from_reddit_data(data, s_choice, callback);
+        me.store_spotify_tracks_from_reddit_data(data, s_choice);
       });
+      callback(s_choice);
     });
   }
 };

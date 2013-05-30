@@ -124,7 +124,7 @@ var youtube2spotify = {
     spotify_link.insertAfter(el);
   },
 
-  add_spotify_link_for_element: function(el, vid, s_choice, callback) {
+  add_spotify_link_for_element: function(el, vid, s_choice) {
     var me = this;
     youtube2spotify_data.store_spotify_track_for_yt_video(
       vid, s_choice, 
@@ -132,32 +132,28 @@ var youtube2spotify = {
         if (data) {
           me.add_spotify_track_link(el, data, s_choice);
         }
-        callback();
       }
     );
   },
 
-  add_spotify_link_for_yt_link: function(yt_link, s_choice, callback) {
+  add_spotify_link_for_yt_link: function(yt_link, s_choice) {
     var url = yt_link.attr('href');
     var video_id = youtube2spotify_util.get_youtube_video_id(url);
     if (!video_id) {
-      callback();
       return;
     }
-    this.add_spotify_link_for_element(yt_link, video_id, s_choice, callback);
+    this.add_spotify_link_for_element(yt_link, video_id, s_choice);
   },
 
-  add_spotify_links_on_reddit: function(spotify_choice, callback) {
+  add_spotify_links_on_reddit: function(spotify_choice) {
     var youtube_links = this.get_youtube_links_on_page();
     var me = this;
     var num_youtube_links = youtube_links.length;
     if (num_youtube_links < 1) {
-      callback();
       return;
     }
     var on_last_track_stored = function() {
       me.add_spotify_trackset_link_and_player(spotify_choice);
-      callback();
     };
     var youtube_link_handler = function(i) {
       me.add_spotify_link_for_yt_link(
@@ -172,7 +168,7 @@ var youtube2spotify = {
     youtube_links.each(youtube_link_handler);
   },
 
-  add_spotify_links_on_youtube: function(spotify_choice, callback) {
+  add_spotify_links_on_youtube: function(spotify_choice) {
     var video_id = this.get_current_youtube_video_id();
     if (!video_id) {
       return;
@@ -184,21 +180,18 @@ var youtube2spotify = {
     if (el.next('.spotify-track').length > 0) {
       return;
     }
-    this.add_spotify_link_for_element(el, video_id, spotify_choice, callback);
+    this.add_spotify_link_for_element(el, video_id, spotify_choice);
   },
 
   add_spotify_links_from_page: function(callback) {
     var me = this;
     youtube2spotify_data.get_spotify_choice(function(spotify_choice) {
       if (me.get_current_youtube_video_id()) {
-        me.add_spotify_links_on_youtube(spotify_choice, function() {
-          callback(spotify_choice);
-        });
+        me.add_spotify_links_on_youtube(spotify_choice);
       } else {
-        me.add_spotify_links_on_reddit(spotify_choice, function() {
-          callback(spotify_choice);
-        });
+        me.add_spotify_links_on_reddit(spotify_choice);
       }
+      callback(spotify_choice);
     });
   }
 };
@@ -214,5 +207,6 @@ youtube2spotify_util.receive_message(function(request, sender, sendResponse) {
     youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {
       sendResponse(spotify_choice);
     });
+    return true;
   }
 });

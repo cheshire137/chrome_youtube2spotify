@@ -8,9 +8,10 @@ youtube2spotify_util.receive_message(function(request, sender, sendResponse) {
     youtube2spotify_data.store_spotify_tracks_from_reddit_api(
       request.subreddit_path,
       function(spotify_choice) {
-        console.log('finished looking up tracks in ' + request.subreddit_path);
+        console.log('kicked off track lookup for ' + request.subreddit_path);
         sendResponse(spotify_choice);
       }
     );
+    return true;
   }
 });
