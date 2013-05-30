@@ -12,6 +12,5 @@ youtube2spotify_util.receive_message(function(request, sender, sendResponse) {
         sendResponse(spotify_choice);
       }
     );
-    return true;
   }
 });

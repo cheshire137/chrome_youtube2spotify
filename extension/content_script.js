@@ -214,6 +214,5 @@ youtube2spotify_util.receive_message(function(request, sender, sendResponse) {
     youtube2spotify.add_spotify_links_from_page(function(spotify_choice) {
       sendResponse(spotify_choice);
     });
-    return true;
   }
 });

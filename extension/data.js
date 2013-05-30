@@ -169,10 +169,8 @@ var youtube2spotify_data = {
     var on_data_stored = function(i) {
       console.log('stored data for YouTube URL #' + (i + 1));
       if (i === num_youtube_links - 1) {
-        me.store_all_tracks(function() {
-          console.log('finished storing all Spotify tracks for YouTube videos');
-          callback(s_choice);
-        });
+        console.log('finished storing all Spotify tracks for YouTube videos');
+        callback(s_choice);
       }
     };
     var url_handler = function(i) {

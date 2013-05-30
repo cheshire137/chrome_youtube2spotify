@@ -99,7 +99,6 @@ var youtube2spotify_popup = {
         me.update_track_list(spotify_choice, function() {
           overlay.fadeOut();
         });
-        return true;
       }
     );
   },
