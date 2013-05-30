@@ -15,20 +15,22 @@ var youtube2spotify_data = {
     });
   },
 
+  get_json: function(url, handler, callback, failure_value) {
+    $.getJSON(url, handler).error(function() {
+      callback(failure_value);
+    });
+  },
+
   get_youtube_title: function(video_id, callback) {
     var url = 'http://gdata.youtube.com/feeds/api/videos/' + video_id + 
               '?v=2&alt=json&key=' + this.youtube_developer_key;
-    setTimeout(function() {
-      $.getJSON(url, function(data) {
-        if (data && data.entry && data.entry.title) {
-          callback(data.entry.title.$t);
-        } else {
-          callback(false);
-        }
-      }).error(function() {
+    this.get_json(url, function(data) {
+      if (data && data.entry && data.entry.title) {
+        callback(data.entry.title.$t);
+      } else {
         callback(false);
-      });
-    }, 0);
+      }
+    }, callback, false);
   },
 
   got_spotify_tracks: function(data, callback) {
@@ -57,19 +59,14 @@ var youtube2spotify_data = {
   get_spotify_data: function(title, callback) {
     var query_url = youtube2spotify_util.get_spotify_track_search_url(title);
     var me = this;
-    setTimeout(function() {
-      $.getJSON(query_url, function(data) {
-        console.log('got Spotify data for title ' + title);
-        if (data && data.info && data.info.num_results > 0) {
-          me.got_spotify_tracks(data, callback);
-        } else {
-          callback(false);
-        }
-      }).error(function() {
-        console.log('got Spotify data for title ' + title);
+    this.get_json(query_url, function(data) {
+      console.log('got Spotify data for title ' + title);
+      if (data && data.info && data.info.num_results > 0) {
+        me.got_spotify_tracks(data, callback);
+      } else {
         callback(false);
-      });
-    }, 0);
+      }
+    }, callback, false);
   },
 
   choose_words: function(original_words, corrected_words) {
@@ -194,15 +191,13 @@ var youtube2spotify_data = {
   get_reddit_api_data: function(subreddit_path, spotify_choice, callback) {
     var url = 'http://www.reddit.com' + subreddit_path + '/new.json';
     var me = this;
-    $.getJSON(url, function(data) {
+    this.get_json(url, function(data) {
       if (data && data.data && data.data.children) {
         callback(data.data.children);
       } else {
         callback([]);
       }
-    }).error(function() {
-      callback([]);
-    });
+    }, callback, []);
   },
 
   get_options: function(callback) {
