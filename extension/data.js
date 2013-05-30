@@ -1,29 +1,41 @@
 var youtube2spotify_data = {
   youtube_developer_key: 'AI39si6koxPUHowThl0aytdIBp8OXNRYu3g08TSBf8UPjuAggM3OQgjh86jyMHj694gf6Aw9lxskseVhHJCcQ-Smem_GX_7dAQ',
   is_writing_storage: false,
+  storage_queue: {},
 
-  store_track: function(single_track_data) {
-    var me = this;
-    if (this.is_writing_storage) {
-      console.log('currently writing to storage, going to wait before storing track ' + single_track_data.name);
-      setTimeout(function() {
-        me.store_track(single_track_data);
-      }, Math.floor(Math.random() * 1000));
+  write_queue_to_storage: function() {
+    if (Object.keys(this.storage_queue).length < 1) {
+      console.log('no more tracks in queue');
       return;
     }
+    if (this.is_writing_storage) {
+      console.log('currently writing to storage...');
+      return;
+    }
+    console.log('going to store ' + Object.keys(this.storage_queue).length + ' tracks from queue');
     this.is_writing_storage = true;
-    console.log('storing track ' + single_track_data.name);
-    // TODO: worry about race condition?
-    // Maybe http://stackoverflow.com/a/15163195/38743
+    var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
       data.tracks = data.tracks || {};
-      data.tracks[single_track_data.id] = single_track_data;
+      var stored_track_names = [];
+      for (var id in me.storage_queue) {
+        var queued_track = me.storage_queue[id];
+        data.tracks[id] = queued_track;
+        stored_track_names.push(queued_track.name);
+        delete me.storage_queue[id];
+      }
       chrome.storage.local.set({'youtube2spotify': data}, function() {
-        console.log('stored Spotify track ' + single_track_data.name + ' -- there are now ' + Object.keys(data.tracks).length + ' stored tracks');
+        console.log('stored Spotify track(s) ' + stored_track_names.join(', ') + ' -- there are now ' + Object.keys(data.tracks).length + ' stored tracks and ' + Object.keys(me.storage_queue).length + ' tracks waiting in the queue');
         me.is_writing_storage = false;
+        me.write_queue_to_storage();
       });
     });
+  },
+
+  store_track: function(single_track_data) {
+    this.storage_queue[single_track_data.id] = single_track_data;
+    this.write_queue_to_storage();
   },
 
   get_json: function(url, handler, callback, failure_value) {
