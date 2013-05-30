@@ -2,39 +2,33 @@ var youtube2spotify_data = {
   youtube_developer_key: 'AI39si6koxPUHowThl0aytdIBp8OXNRYu3g08TSBf8UPjuAggM3OQgjh86jyMHj694gf6Aw9lxskseVhHJCcQ-Smem_GX_7dAQ',
   tracks_to_store: {},
 
-  store_all_tracks: function(callback) {
+  store_track: function(single_track_data, callback) {
     var tracks_to_store = this.tracks_to_store;
     var me = this;
     chrome.storage.local.get('youtube2spotify', function(data) {
       data = data.youtube2spotify || {};
-      var tracks = data.tracks || {};
-      for (var track_id in tracks_to_store) {
-        tracks[track_id] = tracks_to_store[track_id];
-        delete me.tracks_to_store[track_id];
-      }
-      data.tracks = tracks;
+      data.tracks = data.tracks || {};
+      data.tracks[single_track_data.id] = single_track_data;
       chrome.storage.local.set({'youtube2spotify': data}, function() {
-        callback();
+        callback(single_track_data);
       });
     });
-  },
-
-  queue_track_data_for_storage: function(single_track_data) {
-    this.tracks_to_store[single_track_data.id] = single_track_data;
   },
 
   get_youtube_title: function(video_id, callback) {
     var url = 'http://gdata.youtube.com/feeds/api/videos/' + video_id + 
               '?v=2&alt=json&key=' + this.youtube_developer_key;
-    $.getJSON(url, function(data) {
-      if (data && data.entry && data.entry.title) {
-        callback(data.entry.title.$t);
-      } else {
+    setTimeout(function() {
+      $.getJSON(url, function(data) {
+        if (data && data.entry && data.entry.title) {
+          callback(data.entry.title.$t);
+        } else {
+          callback(false);
+        }
+      }).error(function() {
         callback(false);
-      }
-    }).error(function() {
-      callback(false);
-    });
+      });
+    }, 0);
   },
 
   got_spotify_tracks: function(data, callback) {
@@ -63,17 +57,19 @@ var youtube2spotify_data = {
   get_spotify_data: function(title, callback) {
     var query_url = youtube2spotify_util.get_spotify_track_search_url(title);
     var me = this;
-    $.getJSON(query_url, function(data) {
-      console.log('got Spotify data for title ' + title);
-      if (data && data.info && data.info.num_results > 0) {
-        me.got_spotify_tracks(data, callback);
-      } else {
+    setTimeout(function() {
+      $.getJSON(query_url, function(data) {
+        console.log('got Spotify data for title ' + title);
+        if (data && data.info && data.info.num_results > 0) {
+          me.got_spotify_tracks(data, callback);
+        } else {
+          callback(false);
+        }
+      }).error(function() {
+        console.log('got Spotify data for title ' + title);
         callback(false);
-      }
-    }).error(function() {
-      console.log('got Spotify data for title ' + title);
-      callback(false);
-    });
+      });
+    }, 0);
   },
 
   choose_words: function(original_words, corrected_words) {
@@ -115,8 +111,7 @@ var youtube2spotify_data = {
       var corrected_title = chosen_words.join(' ');
       me.get_spotify_data(corrected_title, function(data) {
         if (data) {
-          me.queue_track_data_for_storage(data);
-          callback(data);
+          me.store_track(data, callback);
         } else {
           callback(false);
         }
@@ -150,8 +145,7 @@ var youtube2spotify_data = {
     title = youtube2spotify_util.strip_punctuation(title);
     this.get_spotify_data(title, function(data) {
       if (data) {
-        me.queue_track_data_for_storage(data);
-        callback(data);
+        me.store_track(data, callback);
       } else {
         me.spotify_match_attempt2(title, s_choice, callback);
       }

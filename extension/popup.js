@@ -83,27 +83,31 @@ var youtube2spotify_popup = {
     });
   },
 
+  on_subreddit_link_click: function(link) {
+    var subreddit_path = link.attr('data-subreddit-path');
+    var page = link.closest('.page');
+    var spinner = $('.spinner', page);
+    var page_height = page.height();
+    spinner.css('margin-top', 
+                ((page_height/2) - (spinner.height() / 2)) + 'px');
+    var overlay = $('.overlay', page);
+    overlay.css('height', page_height + 'px').fadeIn();
+    var me = this;
+    youtube2spotify_util.send_message(
+      {action: 'reddit_api', subreddit_path: subreddit_path}, 
+      function(spotify_choice) {
+        me.update_track_list(spotify_choice, function() {
+          overlay.fadeOut();
+        });
+        return true;
+      }
+    );
+  },
+
   setup_subreddit_links: function() {
     var me = this;
     $('a[data-subreddit-path]').click(function() {
-      var link = $(this);
-      var subreddit_path = link.attr('data-subreddit-path');
-      var page = link.closest('.page');
-      var spinner = $('.spinner', page);
-      var page_height = page.height();
-      spinner.css('margin-top', 
-                  ((page_height/2) - (spinner.height() / 2)) + 'px');
-      var overlay = $('.overlay', page);
-      overlay.css('height', page_height + 'px').fadeIn();
-      youtube2spotify_util.send_message(
-        {action: 'reddit_api', subreddit_path: subreddit_path}, 
-        function(spotify_choice) {
-          me.update_track_list(spotify_choice, function() {
-            overlay.fadeOut();
-          });
-          return true;
-        }
-      );
+      me.on_subreddit_link_click($(this));
       return false;
     });
   },
