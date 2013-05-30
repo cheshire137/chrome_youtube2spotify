@@ -163,8 +163,6 @@ var youtube2spotify_util = {
 
   // See http://stackoverflow.com/a/15718294/38743
   send_message: function(message, on_response) {
-    console.log('sending message:');
-    console.log(message);
     var runtime_or_extension = this.get_chrome_runtime_or_extension();
     chrome[runtime_or_extension].sendMessage(message, on_response);
   },

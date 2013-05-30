@@ -92,7 +92,7 @@ var youtube2spotify = {
     header.append(spotify_link).show();
   },
 
-  add_spotify_trackset_link_and_player: function(spotify_choice) {
+  update_spotify_trackset_link_and_player: function(spotify_choice) {
     var tracks = [];
     $('a.spotify-track[data-track-id]').each(function() {
       tracks.push($(this).attr('data-track-id'));
@@ -121,28 +121,28 @@ var youtube2spotify = {
     spotify_link.attr('title', title);
     var icon = this.get_spotify_image('Open track in Spotify');
     spotify_link.append(icon);
+    el.next('.spotify-track').remove();
     spotify_link.insertAfter(el);
   },
 
-  add_spotify_link_for_element: function(el, vid, s_choice) {
+  add_spotify_link_for_element: function(el, vid, s_choice, callback) {
     var me = this;
     youtube2spotify_data.store_spotify_track_for_yt_video(
       vid, s_choice, 
       function(data) {
-        if (data) {
-          me.add_spotify_track_link(el, data, s_choice);
-        }
+        me.add_spotify_track_link(el, data, s_choice);
+        callback(data);
       }
     );
   },
 
-  add_spotify_link_for_yt_link: function(yt_link, s_choice) {
+  add_spotify_link_for_yt_link: function(yt_link, s_choice, callback) {
     var url = yt_link.attr('href');
     var video_id = youtube2spotify_util.get_youtube_video_id(url);
     if (!video_id) {
       return;
     }
-    this.add_spotify_link_for_element(yt_link, video_id, s_choice);
+    this.add_spotify_link_for_element(yt_link, video_id, s_choice, callback);
   },
 
   add_spotify_links_on_reddit: function(spotify_choice) {
@@ -152,17 +152,12 @@ var youtube2spotify = {
     if (num_youtube_links < 1) {
       return;
     }
-    var on_last_track_stored = function() {
-      me.add_spotify_trackset_link_and_player(spotify_choice);
+    var on_track_stored = function() {
+      me.update_spotify_trackset_link_and_player(spotify_choice);
     };
     var youtube_link_handler = function(i) {
       me.add_spotify_link_for_yt_link(
-        $(this), spotify_choice,
-        function() {
-          if (i === num_youtube_links - 1) {
-            on_last_track_stored();
-          }
-        }
+        $(this), spotify_choice, on_track_stored
       );
     };
     youtube_links.each(youtube_link_handler);
