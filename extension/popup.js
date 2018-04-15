@@ -15,19 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-41002289-1']);
-_gaq.push(['_trackPageview']);
-
-(function() {
-  var ga = document.createElement('script'); 
-  ga.type = 'text/javascript'; 
-  ga.async = true;
-  ga.src = 'https://ssl.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(ga, s);
-})();
-
 var youtube2spotify_popup = {
   max_display_artists: 3,
 
@@ -88,13 +75,13 @@ var youtube2spotify_popup = {
     var page = link.closest('.page');
     var spinner = $('.spinner', page);
     var page_height = page.height();
-    spinner.css('margin-top', 
+    spinner.css('margin-top',
                 ((page_height/2) - (spinner.height() / 2)) + 'px');
     var overlay = $('.overlay', page);
     overlay.css('height', page_height + 'px').fadeIn();
     var me = this;
     youtube2spotify_util.send_message(
-      {action: 'reddit_api', subreddit_path: subreddit_path}, 
+      {action: 'reddit_api', subreddit_path: subreddit_path},
       function(spotify_choice) {
         me.update_track_list(spotify_choice, function() {
           overlay.fadeOut();
@@ -142,7 +129,7 @@ var youtube2spotify_popup = {
     var separator = ', ';
     var me = this;
     var append_to_area = function(i, area, max) {
-      var artist_link = me.create_artist_link(track_data.artists[i], 
+      var artist_link = me.create_artist_link(track_data.artists[i],
                                               spotify_choice);
       if (artist_link) {
         area.append(artist_link);
@@ -232,7 +219,7 @@ var youtube2spotify_popup = {
 
     var web_link = $('a.web-trackset-link');
     web_link.unbind('click').click(function() {
-      chrome.tabs.create({url: 'https://play.spotify.com/trackset/' + 
+      chrome.tabs.create({url: 'https://play.spotify.com/trackset/' +
                                encodeURIComponent(name) + '/' + joined_ids});
       return false;
     });
